@@ -1,78 +1,636 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlueSaNGG</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Montserrat&family=Sacramento&display=swap"
-        rel="stylesheet">
-</head>
-
-<body>
-    <div class="top-container">
-        <img class="top-cloud" src="images/cloud.png" alt="cloud-img">
-        <h1>I'm BlueSaNGG</h1>
-        <h2 class="intro">a programmer</h2>
-        <img class="bottom-cloud" src="images/cloud.png" alt="cloud-img">
-        <img src="images/mountain.png" alt="mountain-img">
-    </div>
-    <div class="middle-container">
-        <div class="profile">
-            <img src="https://media3.giphy.com/media/bbpyqDm16ceVq/giphy.gif?cid=ecf05e47g9ccweunqgdveck78qf4olx0ofix6zh4lib6h56e&rid=giphy.gif"
-                alt="">
-            <h2>Hello</h2>
-            <p>Welcome to my Page.🤞</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Qi</title>
+    <!-- awesome font icon -->
+    <script
+      src="https://kit.fontawesome.com/bd9ef9d2b8.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- bs -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <!-- web icon -->
+    <link rel="icon" href="favicon.ico" />
+    <!-- embeded font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton&family=Merriweather&family=Montserrat&family=Sacramento&display=swap"
+      rel="stylesheet"
+    />
+    <!-- css -->
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- title section -->
+    <section class="title-section">
+      <div class="top-container container-fluid">
+        <div class="overlay"></div>
+        <a href="#profile" class="scroll-down">
+          <i class="fas fa-arrow-down fa-3x"></i>
+        </a>
+        <div class="title-container">
+          <h1 class="title-head">Blue Sang</h1>
+          <p class="title-subhead">Interactive resume</p>
         </div>
-        <hr>
-        <div class="skills">
-            <h2>My Skills</h2>
-            <div class="skill-row">
-                <img class="skill code" src="https://image.flaticon.com/icons/svg/3142/3142481.svg" alt="">
-                <h3>Programming</h3>
-                <p>C++ , JavaScript , Python. </p>
-                <p>I am programming. </p>
-                <p>My hands won't leave the keyboard.</p>
+      </div>
+    </section>
+    <!-- navbar -->
+    <!-- profile section -->
+    <section id="profile" class="profile-section white-section">
+      <div class="profile container">
+        <h2>Profile</h2>
+        <p class="profile-description">I'm a creative Software developer</p>
+        <hr class="title-hr" />
+
+        <div class="profile-content">
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="about-me">
+                <h3>About me</h3>
+                <p>
+                  I am an web & software developer. I love structure and
+                  algorithm and I also stand for quality. I love spending time
+                  on fixing little details and optimizing my apps. Also I like
+                  working in a team, you'll learn faster and much more. As the
+                  saying goes: 'two heads are better than one'.
+                </p>
+              </div>
             </div>
-            <div class="skill-row">
-                <img class="skill sport" src="https://image.flaticon.com/icons/svg/2996/2996945.svg" alt="">
-                <h3>Sports</h3>
-                <p>Basketball , Dog walking.</p>
-                <p>Basketball is too easy for me. Dog walking is more challenging.</p>
-                <p>By the way : penguin and shiba are best friends.</p>
+            <div class="col-lg-4 photo-section">
+              <div
+                id="carousel-photos"
+                class="carousel slide"
+                data-bs-ride="carousel"
+              >
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="images/plane.png" class="slide-photo" />
+                  </div>
+                  <div class="carousel-item">
+                    <img src="images/mountain.png" class="slide-photo" />
+                  </div>
+                  <div class="carousel-item">
+                    <img src="images/onepunch.png" class="slide-photo" />
+                  </div>
+                </div>
+              </div>
             </div>
+            <div class="col-lg-4">
+              <div class="details">
+                <h3>Details</h3>
+                <h4>Name:</h4>
+                <p>Qi Jin</p>
+                <h4>Age:</h4>
+                <p>23</p>
+                <h4>Location:</h4>
+                <p>champaign, Illinois, US, Earth</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <hr>
+      </div>
+    </section>
+    <!-- experience section -->
+    <section id="experience" class="experience-section colored-section">
+      <div class="experience container-fluid">
+        <h2>Experiences</h2>
+        <p class="experience-description">“Stay hungry. Stay foolish.”</p>
+        <hr class="title-hr" />
+        <div class="educations">
+          <h3 class="experience-title">Educations</h3>
+          <div class="experiences">
+            <div class="experience-row row">
+              <div class="col-md-4">
+                <h4>University of Illinois at Urbana-Champaign</h4>
+                <p class="experience-period">Jan 2021 - now</p>
+              </div>
+              <div class="col-md-8">
+                <strong>Master of Science</strong>
+                <p class="hidden-phone">
+                  The education is multi-language programming. I learned about
+                  SQL, Javascript, CUDA, Python, Haskell and more. Here I
+                  learned about gaming ,the importance of OOP, web user
+                  experience and design , the compiller principle. Besids, I
+                  learned much in the hardware field, understanding memory
+                  boundry and hardware parallelism helps me writing more
+                  efficient code.
+                </p>
+                <span class="experience-details">
+                  <span class="location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Champaign, IL, US
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="experience-row row">
+              <div class="col-md-4">
+                <h4>ZheJiang University</h4>
+                <p class="experience-period">Sep 2016 - June 2020</p>
+              </div>
+              <div class="col-md-8">
+                <strong>Bachelor</strong>
+                <p class="hidden-phone">
+                  The undergraduate education is basic. I learned basic data
+                  structure and algorithm. Have touched the concept of machine
+                  learning and artificial intelligence. This time grew my
+                  interest of software development.
+                </p>
+                <span class="experience-details">
+                  <span class="location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Zhejiang, China
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="title-hr" />
+        <div class="internships">
+          <h3 class="experience-title">Careers</h3>
+          <div class="experiences">
+            <div class="experience-row row">
+              <div class="col-md-4">
+                <h4>UIUC</h4>
+                <p class="experience-period">Jan 2022 - now</p>
+              </div>
+              <div class="col-md-8">
+                <strong>Course Assistant - Database system</strong>
+                <p class="hidden-phone">
+                  Excited that got a CA job in the school. I am glad to help
+                  student solve problem. Course includes relational schema ,
+                  SQL, MongoDB, Neo4J, Database priciples. My job is watching
+                  students study progress and offer help.
+                </p>
+                <span class="experience-details">
+                  <span class="location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Champaign, IL, US
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="experience-row row">
+              <div class="col-md-4">
+                <h4>NetEase</h4>
+                <p class="experience-period">May 2021 - Aug 2021</p>
+              </div>
+              <div class="col-md-8">
+                <strong>Internship - iOS Developer</strong>
+                <p class="hidden-phone">
+                  My second internship was in the summer break of my graduate
+                  study. Focus on real-time chat software.Using frameworks and
+                  technologies such as CoreML, MessageUI, AFNetwork and masonry
+                  . I also introduced working with Git Flow and supporting my
+                  colleagues to write nice readable and reusable code.
+                </p>
+                <span class="experience-details">
+                  <span class="location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Zhejiang, China
+                  </span>
+                </span>
+              </div>
+            </div>
+            <div class="experience-row row">
+              <div class="col-md-4">
+                <h4>Hithink RoyalFlush Information Network</h4>
+                <p class="experience-period">June 2020 - Jan 2021</p>
+              </div>
+              <div class="col-md-8">
+                <strong>Fulltime - iOS Developer</strong>
+                <p class="hidden-phone">
+                  I did my first job at a company named Hithink. There I learned
+                  to apply my knowledge of software development and start using
+                  Objective-C. Hithink has a stock trading software widely used
+                  in China, with more than 5 millions users.
+                </p>
+                <span class="experience-details">
+                  <span class="location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Zhejiang, China
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- abilities section -->
+    <section id="abilities" class="abilites-section white-section">
+      <div class="abilities">
+        <h2 class="section-title">Abilities</h2>
+        <p class="abilities-description">
+          “Once we accept our limits, we go beyond them.”
+        </p>
+        <hr class="title-hr" />
+        <div>
+          <div class="skills">
+            <h3>Skills</h3>
+            <div class="row">
+              <div class="col-md-6">
+                <ul class="no-bullets">
+                  <li>
+                    <span class="ability-title">JSON</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </span>
+                  </li>
+
+                  <li>
+                    <span class="ability-title">XML</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="ability-title">Bootstrap Framework</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+
+                  <li>
+                    <span class="ability-title">CSS(3)</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+
+                  <li>
+                    <span class="ability-title">HTML(5)</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+
+                  <li>
+                    <span class="ability-title">JQuery</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+
+                  <li>
+                    <span class="ability-title">Javascript</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="ability-title">Python</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="no-bullets">
+                  <li>
+                    <span class="ability-title">MongoDB</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="ability-title">SQL</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="ability-title">Neo4J</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+
+                  <li>
+                    <span class="ability-title">MVC Pattern</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+
+                  <li>
+                    <span class="ability-title">Objective-C</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="ability-title">Haskell</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="ability-title">CUDA</span>
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+                  <li>
+                    <span class="ability-title"
+                      >Object Orientated Programming</span
+                    >
+                    <span class="ability-score">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="far fa-star"></i>
+                      <i class="far fa-star"></i>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="title-hr" />
+        <div class="languages">
+          <h3>languages</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <ul class="no-bullets">
+                <li>
+                  <span class="ability-title">Chinese (Mother tongue)</span>
+                  <span class="ability-score">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <ul class="no-bullets">
+                <li>
+                  <span class="ability-title">English (Daily use)</span>
+                  <span class="ability-score">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <hr class="title-hr" />
+        <div class="tools">
+          <h3>tools</h3>
+          <div class="row">
+            <div class="col-md-6">
+              <ul class="no-bullets">
+                <li>
+                  <span class="ability-title">MS Office</span>
+                  <span class="ability-score">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </span>
+                </li>
+
+                <li>
+                  <span class="ability-title">Mac</span>
+                  <span class="ability-score">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </span>
+                </li>
+
+                <li>
+                  <span class="ability-title">Windows</span>
+                  <span class="ability-score">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <ul class="no-bullets">
+                <li>
+                  <span class="ability-title">Internet Explore 10+</span>
+                  <span class="ability-score">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </span>
+                </li>
+
+                <li>
+                  <span class="ability-title">Xcode</span>
+                  <span class="ability-score">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </span>
+                </li>
+                <li>
+                  <span class="ability-title">Git / Git Flow</span>
+                  <span class="ability-score">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- projects section -->
+    <section id="projects" class="projects-section colored-section">
+      <div class="projects">
+        <h2 class="section-title">Projects</h2>
+        <p class="project-description">
+          “I'd rather be optimistic and wrong than pessimistic and right.”
+        </p>
+        <hr class="title-hr" />
+        <div class="project-row">
+          <!--  -->
+          <div class="row">
+            <div class="col-md-6 col-sm-12 col-xs-12">
+              <figure class="effect">
+                <img src="images/simon.png" alt="Simon" />
+
+                <figcaption>
+                  <h3>Simon</h3>
+                  <p>Simon, a interactive memory game.</p>
+                  <p>
+                    <strong>Tags:</strong> <br />Development, Javascript, Game
+                  </p>
+                  <a
+                    href="https://bluesangg.github.io/game-simon/"
+                    target="_blank"
+                    >View more</a
+                  >
+                  <span class="icon">
+                    <i class="fas fa-link"></i>
+                  </span>
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="col-md-6 col-sm-12 col-xs-12">
+              <figure class="effect">
+                <img src="images/BlogPic.png" alt="SBlog" />
+
+                <figcaption>
+                  <h3>SBlog</h3>
+                  <p>SBlog, a personal blog for daily posts.</p>
+                  <p>
+                    <strong>Tags:</strong> <br />Design, Development, Backend
+                  </p>
+                  <a href="https://bluesang-blog.herokuapp.com/" target="_blank"
+                    >View more</a
+                  >
+                  <span class="icon">
+                    <i class="fas fa-link"></i>
+                  </span>
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- contact sectoin -->
+    <section id="contact" class="contact-section">
+      <div class="bottom-container">
         <div class="contact-me">
-            <img class="shiba"
-                src="https://media3.giphy.com/media/S3mvHu7kxP9XIbw1hK/200.webp?cid=ecf05e47z9dp10l406n5eyx0fyx3wq980qlgbah2m8e9m9yy&rid=200.webp"
-                alt="Seven"
-                >
-            <img
-                class="penguin" 
-                src="https://media1.giphy.com/media/Q9vrwWyt84WSj22Y4M/200.webp?cid=ecf05e475q0hph0a0je5804g2aato3byc4yl1f4skj17gaq3&rid=200.webp" alt="">
-            <h2>Get In Touch</h2>
-            <h3>If you can find Me</h3>
-            <p>Can i go to your house for new year?</p>
-            <a href="mailto:bluesangg@163.com" class="BUTTON_PQK">CONTACT ME</a>
+          <h2 class="section-title">Get In Touch</h2>
+          <p class="abilities-description">
+            “I'm just enthusiastic about what I do.”
+          </p>
+          <hr class="contact-hr" />
+          <div class="row contact-row">
+            <div class="col-md-6 col-sm-12 col-xs-12">
+              <a
+                class="btn btn-lg btn-outline-secondary"
+                href="mailto:qij3@illinois.edu"
+                ><i class="fas fa-at contact-btn"></i>qij3@illinois.edu</a
+              >
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12">
+              <a
+                class="btn btn-lg btn-outline-secondary"
+                href="https://github.com/BlueSaNGG"
+                ><i class="fas fa-at github-btn"></i>Github:BlueSaNGG</a
+              >
+            </div>
+          </div>
+
+          <br />
+          <p class="copyright">@Blue Sang © Qi Jin.</p>
         </div>
-    </div>
+      </div>
+    </section>
 
-
-    <div class="bottom-container">
-        <a class="footer-link" href="https://bluesangg.github.io/TinDog/" target="_blank">TinDog App</a>
-        <a class="footer-link" href="https://bluesangg.github.io/burgerking/" target="_blank">Burger App</a>
-        <a class="footer-link" href="https://github.com/BlueSaNGG/" target="_blank">Github Addr</a>
-        
-        <p>© 2020 BlueSaNGG.</p>
-    </div>
-
-
-</body>
-
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+      integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

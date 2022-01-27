@@ -36,6 +36,7 @@ p {
 }
 
 body {
+  position: relative;
   margin: 0%;
   text-align: center;
   font-family: "Merriweather", serif;
@@ -61,6 +62,8 @@ section {
 /* title section */
 .title-section {
   padding: 0;
+  position: relative;
+  z-index: 99;
 }
 .top-container {
   position: relative;
@@ -133,7 +136,36 @@ section {
 }
 
 /* nav bar */
+.nav_scroll{
+  position: fixed;
+  right:3%;
+  top: 15%;
+}
 
+.nav-link.active {
+  color: white;
+}
+
+
+.nav-link:hover {
+  color:  rgba(235, 227, 18, 0.774);
+  background-color: #918975;
+}
+
+.nav-link {
+  text-align: center;
+  right: 3%;
+  width: 120px;
+  height: 90px;
+  background-color: #696353;
+  opacity: 70%;
+  color: #fef7dc;
+}
+
+.nav-link span {
+  position: relative;
+  top: 25px;
+}
 /* profile section */
 .profile h2 {
   color: #918975;

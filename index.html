@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Qi</title>
+    <title>BlueSaNGG</title>
     <!-- awesome font icon -->
     <script
       src="https://kit.fontawesome.com/bd9ef9d2b8.js"
@@ -29,7 +29,12 @@
     <!-- css -->
     <link rel="stylesheet" href="css/styles.css" />
   </head>
-  <body>
+  <body
+    data-spy="scroll"
+    data-target="#nav_scroll"
+    data-offset="100"
+    class="scrollspy"
+  >
     <!-- title section -->
     <section class="title-section">
       <div class="top-container container-fluid">
@@ -44,6 +49,16 @@
       </div>
     </section>
     <!-- navbar -->
+    <div id="nav_scroll" class="nav_scroll">
+      <nav class="nav flex-column">
+        <a class="nav-link" href="#profile"><span>Profile</span> </a>
+        <a class="nav-link" href="#experience"><span>Experience</span></a>
+        <a class="nav-link" href="#abilities"><span>Abilities</span></a>
+        <a class="nav-link" href="#projects"><span>projects</span></a>
+        <a class="nav-link" href="#contact"><span>contact</span></a>
+      </nav>
+    </div>
+
     <!-- profile section -->
     <section id="profile" class="profile-section white-section">
       <div class="profile container">
@@ -88,7 +103,7 @@
               <div class="details">
                 <h3>Details</h3>
                 <h4>Name:</h4>
-                <p>Qi Jin</p>
+                <p>BlueSaNGG</p>
                 <h4>Age:</h4>
                 <p>23</p>
                 <h4>Location:</h4>
@@ -492,6 +507,16 @@
                     <i class="fas fa-star"></i>
                   </span>
                 </li>
+                <li>
+                  <span class="ability-title">Unreal Engine</span>
+                  <span class="ability-score">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                  </span>
+                </li>
               </ul>
             </div>
             <div class="col-md-6">
@@ -603,8 +628,8 @@
             <div class="col-md-6 col-sm-12 col-xs-12">
               <a
                 class="btn btn-lg btn-outline-secondary"
-                href="mailto:qij3@illinois.edu"
-                ><i class="fas fa-at contact-btn"></i>qij3@illinois.edu</a
+                href="mailto:bluesangg@163.com"
+                ><i class="fas fa-at contact-btn"></i>bluesangg@163.com</a
               >
             </div>
             <div class="col-md-6 col-sm-12 col-xs-12">
@@ -617,7 +642,7 @@
           </div>
 
           <br />
-          <p class="copyright">@Blue Sang © Qi Jin.</p>
+          <p class="copyright">@Blue Sang</p>
         </div>
       </div>
     </section>

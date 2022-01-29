@@ -222,15 +222,6 @@ section {
   padding-bottom: 20px;
 }
 
-@media (max-width: 900px) {
-  .hidden-phone {
-    display: none;
-  }
-  #nav_scroll {
-    display: none;
-  }
-}
-
 .experience-title {
   text-align: left;
   width: 70%;
@@ -488,4 +479,18 @@ figure.effect:hover p {
 
 .white-section h3 {
   color: #918975;
+}
+
+
+
+@media (max-width: 900px) {
+  .hidden-phone {
+    display: none;
+  }
+  #nav_scroll {
+    display: none;
+  }
+  .ability-score {
+    display: none; 
+  }
 }

@@ -148,7 +148,7 @@ section {
 
 
 .nav-link:hover {
-  color:  rgba(235, 227, 18, 0.774);
+  color: #fff9e6;
   background-color: #918975;
 }
 
@@ -280,29 +280,9 @@ ul.no-bullets {
   letter-spacing: 0.02em;
 }
 
-.ability-score i {
-  color: #d4a017;
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
-}
-
 #abilities ul > li .ability-score {
   float: right;
-}
-#abilities ul > li .ability-score .fa-star {
-  color: #dfe0e0;
-  font-size: 20px;
-
-  -webkit-transition: all 0.3s;
-  -moz-transition: all 0.3s;
-  -o-transition: all 0.3s;
-  transition: all 0.3s;
-}
-#abilities ul > li .ability-score .fas {
-  color:darksalmon;
-}
-
-#abilities ul > li:hover .ability-score .fa-star {
-  margin-left: 5px;
+  justify-content: flex-end;
 }
 
 .tools, .skills, .languages {

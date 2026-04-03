@@ -259,6 +259,17 @@ ul.no-bullets {
   background: #f2f2f2;
 }
 
+.ability-score {
+  display: inline-flex;
+  gap: 0.22rem;
+  align-items: center;
+}
+
+.ability-score i {
+  color: #d4a017;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+}
+
 #abilities ul > li .ability-score {
   float: right;
 }

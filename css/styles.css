@@ -539,7 +539,151 @@ figure.effect:hover p {
   #nav_scroll {
     display: none;
   }
+
+  section {
+    min-height: auto;
+    padding: 72px 0;
+  }
+
+  h2 {
+    font-size: 2.4rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .title-container {
+    top: 18%;
+    padding: 28px 24px;
+  }
+
+  .title-head {
+    font-size: 3rem;
+    letter-spacing: 0.18rem;
+    padding-bottom: 14px;
+  }
+
+  .title-subhead {
+    font-size: 1.1rem;
+  }
+
+  .top-container {
+    height: 82vh;
+    background-position: center center;
+  }
+
+  .scroll-down {
+    width: 84px;
+    height: 64px;
+  }
+
+  .profile-content,
+  .experiences,
+  .experience-title,
+  .tools,
+  .skills,
+  .languages,
+  .project-row,
   .contact-row {
     width: 90%;
+  }
+
+  .experience-row {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  #projects figure img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    transform: none;
+  }
+
+  #projects figure figcaption {
+    padding: 18px 18px;
+  }
+
+  .contact-card {
+    min-height: 120px;
+    padding: 18px 14px;
+  }
+
+  .contact-card-value {
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 600px) {
+  section {
+    padding: 56px 0;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  .title-container {
+    top: 16%;
+    padding: 24px 18px;
+  }
+
+  .title-head {
+    font-size: 2.35rem;
+    letter-spacing: 0.08rem;
+  }
+
+  .title-subhead {
+    font-size: 1rem;
+  }
+
+  .top-container {
+    height: 76vh;
+  }
+
+  .profile-description,
+  .experience-description,
+  .abilities-description,
+  .project-description {
+    font-size: 1.05rem;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .title-hr,
+  .contact-hr {
+    width: 60%;
+    margin: 28px 0;
+  }
+
+  .profile-content,
+  .experiences,
+  .experience-title,
+  .tools,
+  .skills,
+  .languages,
+  .project-row,
+  .contact-row {
+    width: 92%;
+  }
+
+  .contact-card {
+    min-height: 108px;
+  }
+
+  .contact-card-icon {
+    font-size: 1.35rem;
+    margin-bottom: 10px;
   }
 }

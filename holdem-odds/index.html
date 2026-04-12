@@ -32,6 +32,9 @@
       margin: 28px auto;
     }
     .hero {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
       padding: 24px 28px;
       background: var(--panel);
       border: 1px solid var(--border);
@@ -90,6 +93,12 @@
     }
     select option { color: #111827; }
     .button-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+    .preset-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .mini-btn { padding: 10px 12px; border-radius: 999px; font-size: 0.88rem; background: rgba(255,255,255,0.05); }
+    .mobile-dock { position: sticky; bottom: 12px; z-index: 25; margin-top: 18px; padding: 14px 16px; border-radius: 18px; background: rgba(15,23,42,0.9); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(10px); display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .dock-main { display:flex; flex-direction:column; gap:4px; }
+    .dock-kpi { font-size: 1.05rem; font-weight: 800; }
+    .dock-sub { color: var(--muted); font-size: 0.88rem; }
     button {
       cursor: pointer;
       font-weight: 700;
@@ -211,9 +220,17 @@
           </label>
         </div>
 
+        <div class="preset-row">
+          <button class="mini-btn" id="presetBtnVsBb">BTN vs BB</button>
+          <button class="mini-btn" id="presetCoVsBtn">CO vs BTN open</button>
+          <button class="mini-btn" id="presetSbVsBb">SB vs BB</button>
+        </div>
+
         <div class="button-row">
           <button class="primary" id="runBtn">Run deeper sim</button>
           <button class="secondary" id="randomHeroBtn">Random hero hand</button>
+          <button class="secondary" id="undoBtn">Undo last card</button>
+          <button class="secondary" id="clearBoardBtn">Clear board</button>
           <button class="danger" id="clearBtn">Clear all</button>
         </div>
 
@@ -253,6 +270,14 @@
         </div>
       </div>
     </section>
+
+    <div class="mobile-dock">
+      <div class="dock-main">
+        <div class="dock-kpi" id="dockWin">Win --</div>
+        <div class="dock-sub" id="dockAction">Action --</div>
+      </div>
+      <button class="mini-btn" id="scrollResultsBtn">View details</button>
+    </div>
   </div>
 
   <script>
@@ -277,7 +302,8 @@
       cards: Object.fromEntries(slots.map(slot => [slot.key, null])),
       autoCalcTimer: null,
       isCalculating: false,
-      pendingAutoCalc: false
+      pendingAutoCalc: false,
+      history: []
     };
 
     const slotRow = document.getElementById('slotRow');
@@ -299,6 +325,8 @@
     const summaryEl = document.getElementById('summary');
     const actionAdviceEl = document.getElementById('actionAdvice');
     const adviceReasonEl = document.getElementById('adviceReason');
+    const dockWinEl = document.getElementById('dockWin');
+    const dockActionEl = document.getElementById('dockAction');
 
     for (let i = 1; i <= 8; i++) {
       const opt = document.createElement('option');
@@ -365,6 +393,7 @@
           btn.textContent = `${r}${suitSymbols[s]}`;
           btn.disabled = blocked;
           btn.onclick = () => {
+            if (!current) state.history.push({ slot: state.activeSlot, previous: state.cards[state.activeSlot] });
             state.cards[state.activeSlot] = current ? null : card;
             autoAdvance();
             buildSlots();
@@ -386,6 +415,44 @@
       }
     }
 
+    function clearBoard() {
+      for (const key of ['flop1','flop2','flop3','turn','river']) state.cards[key] = null;
+      state.activeSlot = 'flop1';
+      buildSlots();
+      buildPicker();
+      scheduleAutoCalculate();
+    }
+
+    function undoLastCard() {
+      const lastFilled = [...slots].reverse().find(slot => state.cards[slot.key]);
+      if (!lastFilled) return;
+      state.cards[lastFilled.key] = null;
+      state.activeSlot = lastFilled.key;
+      buildSlots();
+      buildPicker();
+      scheduleAutoCalculate();
+    }
+
+    function applyPreset(kind) {
+      if (kind === 'btn-bb') {
+        heroPositionSelect.value = 'BTN';
+        villainPositionSelect.value = 'BB';
+        facingActionSelect.value = 'unopened';
+        stackDepthSelect.value = '100';
+      } else if (kind === 'co-btn-open') {
+        heroPositionSelect.value = 'CO';
+        villainPositionSelect.value = 'BTN';
+        facingActionSelect.value = 'facing-open';
+        stackDepthSelect.value = '100';
+      } else if (kind === 'sb-bb') {
+        heroPositionSelect.value = 'SB';
+        villainPositionSelect.value = 'BB';
+        facingActionSelect.value = 'unopened';
+        stackDepthSelect.value = '40';
+      }
+      scheduleAutoCalculate();
+    }
+
     function clearAll() {
       if (state.autoCalcTimer) clearTimeout(state.autoCalcTimer);
       state.autoCalcTimer = null;
@@ -404,6 +471,8 @@
       summaryEl.innerHTML = '<strong>How to use:</strong><br />• Pick 2 hole cards for Hero<br />• Optionally pick 0-5 board cards<br />• Choose positions / facing action / stack depth<br />• Odds now auto-update after card and setting changes';
       actionAdviceEl.textContent = '--';
       adviceReasonEl.innerHTML = 'Pick both hero cards to unlock the first-pass preflop suggestion.';
+      dockWinEl.textContent = 'Win --';
+      dockActionEl.textContent = 'Action --';
     }
 
     function randomHero() {
@@ -660,6 +729,8 @@
       const advice = getAdvice(hero);
       actionAdviceEl.textContent = advice.action;
       adviceReasonEl.innerHTML = `${advice.reason}<br /><br />Default villain range anchor: <strong>${villainPositionSelect.value}</strong> · Facing: <strong>${facingActionSelect.value}</strong> · Stack: <strong>${stackDepthSelect.value}bb</strong>`;
+      dockWinEl.textContent = `Win ${w.toFixed(1)}%`;
+      dockActionEl.textContent = advice.action;
       summaryEl.innerHTML = `
         <strong>Current setup</strong><br />
         Hero: ${hero.map(pretty).join(' ')} (${canonicalHand(hero)})<br />
@@ -677,6 +748,12 @@
     document.getElementById('runBtn').onclick = () => calculate(true);
     document.getElementById('clearBtn').onclick = clearAll;
     document.getElementById('randomHeroBtn').onclick = randomHero;
+    document.getElementById('undoBtn').onclick = undoLastCard;
+    document.getElementById('clearBoardBtn').onclick = clearBoard;
+    document.getElementById('presetBtnVsBb').onclick = () => applyPreset('btn-bb');
+    document.getElementById('presetCoVsBtn').onclick = () => applyPreset('co-btn-open');
+    document.getElementById('presetSbVsBb').onclick = () => applyPreset('sb-bb');
+    document.getElementById('scrollResultsBtn').onclick = () => document.getElementById('actionAdvice').scrollIntoView({ behavior: 'smooth', block: 'center' });
     opponentsSelect.onchange = () => scheduleAutoCalculate();
     heroPositionSelect.onchange = () => scheduleAutoCalculate();
     villainPositionSelect.onchange = () => scheduleAutoCalculate();

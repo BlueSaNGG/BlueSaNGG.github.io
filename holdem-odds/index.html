@@ -99,7 +99,7 @@
     .dock-main { display:flex; flex-direction:column; gap:4px; min-width:0; }
     .dock-kpi { font-size: 1.05rem; font-weight: 800; }
     .dock-sub { color: var(--muted); font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .dock-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+    .dock-actions { display:flex; gap:8px; align-items:center; justify-content:flex-end; flex-shrink: 0; }
     .dock-btn { padding: 8px 10px; border-radius: 12px; font-size: 0.82rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); font-weight: 700; }
     .dock-btn.subtle { opacity: 0.78; }
     .mobile-dock.loading { border-color: rgba(96,165,250,0.45); box-shadow: 0 0 0 1px rgba(96,165,250,0.2) inset; }
@@ -298,10 +298,8 @@
         <div class="dock-sub" id="dockAction">Action --</div>
       </div>
       <div class="dock-actions">
-        <button class="dock-btn" id="dockUndoBtn">Undo</button>
-        <button class="dock-btn" id="dockClearBoardBtn">Clear board</button>
-        <button class="dock-btn subtle" id="dockClearAllBtn">Clear all</button>
-        <button class="dock-btn" id="scrollResultsBtn">Details</button>
+        <button class="dock-btn subtle" id="dockClearBtn">Clear</button>
+        <button class="dock-btn" id="dockPickCardsBtn">Pick cards</button>
       </div>
     </div>
   </div>

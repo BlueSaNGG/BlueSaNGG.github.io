@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Texas Hold'em Odds Calculator</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: rgba(255,255,255,0.06);
+      --panel-strong: rgba(255,255,255,0.1);
+      --text: #eef2ff;
+      --muted: #a5b4d4;
+      --accent: #60a5fa;
+      --accent-2: #34d399;
+      --danger: #f87171;
+      --border: rgba(255,255,255,0.1);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.15), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(52,211,153,0.12), transparent 26%),
+        linear-gradient(135deg, #020617 0%, #0f172a 50%, #111827 100%);
+      min-height: 100vh;
+    }
+    .wrap {
+      width: min(1200px, calc(100% - 32px));
+      margin: 28px auto;
+    }
+    .hero {
+      padding: 24px 28px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+      margin-bottom: 20px;
+    }
+    .eyebrow {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(96,165,250,0.14);
+      color: #bfdbfe;
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(2rem, 5vw, 3rem); }
+    .subtitle { margin: 0; color: var(--muted); line-height: 1.7; max-width: 900px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 22px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.2);
+    }
+    .section-title { margin: 0 0 8px; font-size: 1.15rem; }
+    .hint { color: var(--muted); margin: 0 0 16px; line-height: 1.6; }
+    .slot-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+    .slot {
+      min-width: 92px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .slot-label { color: var(--muted); font-size: 0.8rem; margin-bottom: 8px; }
+    .slot-value { font-size: 1.05rem; font-weight: 700; }
+    .controls { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-bottom: 18px; }
+    label { display: flex; flex-direction: column; gap: 8px; font-size: 0.92rem; color: var(--muted); }
+    select, button {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.96rem;
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+    }
+    select option { color: #111827; }
+    .button-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+    button {
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    .primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+    .secondary { background: rgba(255,255,255,0.06); }
+    .danger { background: rgba(248,113,113,0.14); color: #fecaca; border-color: rgba(248,113,113,0.3); }
+    .picker-grid { display: grid; grid-template-columns: repeat(13, minmax(0,1fr)); gap: 8px; }
+    .pick-card {
+      border-radius: 12px;
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      letter-spacing: .02em;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      user-select: none;
+    }
+    .pick-card.red { color: #fca5a5; }
+    .pick-card.black { color: #f8fafc; }
+    .pick-card.used { opacity: .32; cursor: not-allowed; }
+    .pick-card.active { outline: 2px solid var(--accent-2); background: rgba(52,211,153,0.16); }
+    .results {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .stat-label { color: var(--muted); font-size: 0.82rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .08em; }
+    .stat-value { font-size: 1.5rem; font-weight: 800; }
+    .progress { height: 16px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; display: flex; }
+    .progress > div { height: 100%; }
+    .win { background: #34d399; }
+    .tie { background: #fbbf24; }
+    .lose { background: #f87171; }
+    .meta { margin-top: 16px; color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
+    .status { min-height: 24px; margin: 12px 0 0; color: #bfdbfe; }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: 1fr; }
+      .picker-grid { grid-template-columns: repeat(4, minmax(0,1fr)); }
+      .results { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Hold'em Odds · MVP</div>
+      <h1>Texas Hold'em Odds Calculator</h1>
+      <p class="subtitle">Pick your two hole cards, add any community cards on the board, choose the number of opponents, and estimate your win / tie / lose odds against random hands using Monte Carlo simulation.</p>
+    </section>
+
+    <section class="grid">
+      <div class="card">
+        <h2 class="section-title">1. Pick cards</h2>
+        <p class="hint">Select a slot first, then click a card below. Used cards are automatically disabled so you cannot pick duplicates.</p>
+
+        <div class="slot-row" id="slotRow"></div>
+
+        <div class="controls">
+          <label>
+            Opponents
+            <select id="opponents"></select>
+          </label>
+          <label>
+            Simulations
+            <select id="simulations">
+              <option value="2000">2,000</option>
+              <option value="5000" selected>5,000</option>
+              <option value="10000">10,000</option>
+              <option value="20000">20,000</option>
+            </select>
+          </label>
+          <label>
+            Speed note
+            <select id="mode">
+              <option value="normal" selected>Balanced</option>
+              <option value="fast">Fast</option>
+              <option value="deep">More accurate</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button class="primary" id="runBtn">Calculate odds</button>
+          <button class="secondary" id="randomHeroBtn">Random hero hand</button>
+          <button class="danger" id="clearBtn">Clear all</button>
+        </div>
+
+        <div class="picker-grid" id="picker"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">2. Results</h2>
+        <p class="hint">MVP assumption: all opponents hold random valid hands from the remaining deck.</p>
+
+        <div class="results">
+          <div class="stat"><div class="stat-label">Win</div><div class="stat-value" id="winPct">--</div></div>
+          <div class="stat"><div class="stat-label">Tie</div><div class="stat-value" id="tiePct">--</div></div>
+          <div class="stat"><div class="stat-label">Lose</div><div class="stat-value" id="losePct">--</div></div>
+        </div>
+
+        <div class="progress">
+          <div class="win" id="winBar" style="width:0%"></div>
+          <div class="tie" id="tieBar" style="width:0%"></div>
+          <div class="lose" id="loseBar" style="width:0%"></div>
+        </div>
+
+        <p class="status" id="status">Waiting for cards.</p>
+
+        <div class="meta" id="summary">
+          <strong>How to use:</strong><br />
+          • Pick 2 hole cards for Hero<br />
+          • Optionally pick 0-5 board cards<br />
+          • Choose number of opponents<br />
+          • Click calculate to run the simulation
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const ranks = ['A','K','Q','J','T','9','8','7','6','5','4','3','2'];
+    const suitOrder = ['s','h','d','c'];
+    const suitSymbols = { s: '♠', h: '♥', d: '♦', c: '♣' };
+    const suitColor = { s: 'black', c: 'black', h: 'red', d: 'red' };
+    const rankValue = { '2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'T':10,'J':11,'Q':12,'K':13,'A':14 };
+
+    const slots = [
+      { key: 'hero1', label: 'Hero 1' },
+      { key: 'hero2', label: 'Hero 2' },
+      { key: 'flop1', label: 'Flop 1' },
+      { key: 'flop2', label: 'Flop 2' },
+      { key: 'flop3', label: 'Flop 3' },
+      { key: 'turn', label: 'Turn' },
+      { key: 'river', label: 'River' }
+    ];
+
+    const state = {
+      activeSlot: 'hero1',
+      cards: Object.fromEntries(slots.map(slot => [slot.key, null]))
+    };
+
+    const slotRow = document.getElementById('slotRow');
+    const picker = document.getElementById('picker');
+    const opponentsSelect = document.getElementById('opponents');
+    const simulationsSelect = document.getElementById('simulations');
+    const modeSelect = document.getElementById('mode');
+    const winPct = document.getElementById('winPct');
+    const tiePct = document.getElementById('tiePct');
+    const losePct = document.getElementById('losePct');
+    const winBar = document.getElementById('winBar');
+    const tieBar = document.getElementById('tieBar');
+    const loseBar = document.getElementById('loseBar');
+    const statusEl = document.getElementById('status');
+    const summaryEl = document.getElementById('summary');
+
+    for (let i = 1; i <= 8; i++) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = String(i);
+      if (i === 1) opt.selected = true;
+      opponentsSelect.appendChild(opt);
+    }
+
+    function buildSlots() {
+      slotRow.innerHTML = '';
+      for (const slot of slots) {
+        const el = document.createElement('button');
+        el.className = 'slot';
+        el.type = 'button';
+        if (state.activeSlot === slot.key) el.style.outline = '2px solid #60a5fa';
+        const card = state.cards[slot.key];
+        el.innerHTML = `<div class="slot-label">${slot.label}</div><div class="slot-value">${card ? pretty(card) : 'Empty'}</div>`;
+        el.onclick = () => { state.activeSlot = slot.key; buildSlots(); buildPicker(); };
+        slotRow.appendChild(el);
+      }
+    }
+
+    function fullDeck() {
+      const deck = [];
+      for (const s of suitOrder) for (const r of ranks) deck.push(r + s);
+      return deck;
+    }
+
+    function usedCards() {
+      return new Set(Object.values(state.cards).filter(Boolean));
+    }
+
+    function pretty(card) {
+      return card ? `${card[0]}${suitSymbols[card[1]]}` : 'Empty';
+    }
+
+    function buildPicker() {
+      picker.innerHTML = '';
+      const used = usedCards();
+      for (const s of suitOrder) {
+        for (const r of ranks) {
+          const card = r + s;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const current = state.cards[state.activeSlot] === card;
+          const blocked = used.has(card) && !current;
+          btn.className = `pick-card ${suitColor[s]} ${blocked ? 'used' : ''} ${current ? 'active' : ''}`;
+          btn.textContent = `${r}${suitSymbols[s]}`;
+          btn.disabled = blocked;
+          btn.onclick = () => {
+            state.cards[state.activeSlot] = current ? null : card;
+            autoAdvance();
+            buildSlots();
+            buildPicker();
+          };
+          picker.appendChild(btn);
+        }
+      }
+    }
+
+    function autoAdvance() {
+      const currentIndex = slots.findIndex(s => s.key === state.activeSlot);
+      for (let i = currentIndex + 1; i < slots.length; i++) {
+        if (!state.cards[slots[i].key]) {
+          state.activeSlot = slots[i].key;
+          return;
+        }
+      }
+    }
+
+    function clearAll() {
+      for (const slot of slots) state.cards[slot.key] = null;
+      state.activeSlot = 'hero1';
+      buildSlots();
+      buildPicker();
+      resetResults();
+    }
+
+    function resetResults() {
+      winPct.textContent = tiePct.textContent = losePct.textContent = '--';
+      winBar.style.width = tieBar.style.width = loseBar.style.width = '0%';
+      statusEl.textContent = 'Waiting for cards.';
+      summaryEl.innerHTML = '<strong>How to use:</strong><br />• Pick 2 hole cards for Hero<br />• Optionally pick 0-5 board cards<br />• Choose number of opponents<br />• Click calculate to run the simulation';
+    }
+
+    function randomHero() {
+      clearAll();
+      const deck = shuffle(fullDeck());
+      state.cards.hero1 = deck.pop();
+      state.cards.hero2 = deck.pop();
+      state.activeSlot = 'flop1';
+      buildSlots();
+      buildPicker();
+    }
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function combinations(arr, k) {
+      const out = [];
+      const path = [];
+      function rec(start) {
+        if (path.length === k) { out.push(path.slice()); return; }
+        for (let i = start; i < arr.length; i++) {
+          path.push(arr[i]);
+          rec(i + 1);
+          path.pop();
+        }
+      }
+      rec(0);
+      return out;
+    }
+
+    function scoreFive(cards) {
+      const vals = cards.map(c => rankValue[c[0]]).sort((a,b) => b - a);
+      const suits = cards.map(c => c[1]);
+      const counts = {};
+      for (const v of vals) counts[v] = (counts[v] || 0) + 1;
+      const groups = Object.entries(counts)
+        .map(([v, c]) => ({ v: Number(v), c }))
+        .sort((a,b) => b.c - a.c || b.v - a.v);
+      const flush = suits.every(s => s === suits[0]);
+      const uniqueDesc = [...new Set(vals)].sort((a,b) => b - a);
+      let straightHigh = 0;
+      if (uniqueDesc.length >= 5) {
+        for (let i = 0; i <= uniqueDesc.length - 5; i++) {
+          if (uniqueDesc[i] - uniqueDesc[i+4] === 4) { straightHigh = uniqueDesc[i]; break; }
+        }
+        if (!straightHigh && uniqueDesc.includes(14) && uniqueDesc.includes(5) && uniqueDesc.includes(4) && uniqueDesc.includes(3) && uniqueDesc.includes(2)) straightHigh = 5;
+      }
+      if (flush && straightHigh) return [8, straightHigh];
+      if (groups[0].c === 4) return [7, groups[0].v, groups[1].v];
+      if (groups[0].c === 3 && groups[1].c === 2) return [6, groups[0].v, groups[1].v];
+      if (flush) return [5, ...vals];
+      if (straightHigh) return [4, straightHigh];
+      if (groups[0].c === 3) {
+        const kickers = groups.slice(1).map(g => g.v).sort((a,b)=>b-a);
+        return [3, groups[0].v, ...kickers];
+      }
+      if (groups[0].c === 2 && groups[1].c === 2) {
+        const pairVals = [groups[0].v, groups[1].v].sort((a,b)=>b-a);
+        const kicker = groups.find(g => g.c === 1).v;
+        return [2, ...pairVals, kicker];
+      }
+      if (groups[0].c === 2) {
+        const kickers = groups.slice(1).map(g => g.v).sort((a,b)=>b-a);
+        return [1, groups[0].v, ...kickers];
+      }
+      return [0, ...vals];
+    }
+
+    function compareScores(a, b) {
+      const len = Math.max(a.length, b.length);
+      for (let i = 0; i < len; i++) {
+        const av = a[i] || 0;
+        const bv = b[i] || 0;
+        if (av > bv) return 1;
+        if (av < bv) return -1;
+      }
+      return 0;
+    }
+
+    function bestScore(cards) {
+      const combos = combinations(cards, 5);
+      let best = null;
+      for (const combo of combos) {
+        const score = scoreFive(combo);
+        if (!best || compareScores(score, best) > 0) best = score;
+      }
+      return best;
+    }
+
+    async function calculate() {
+      const hero = [state.cards.hero1, state.cards.hero2].filter(Boolean);
+      if (hero.length !== 2) {
+        statusEl.textContent = 'Pick both hero cards first.';
+        return;
+      }
+      const boardKnown = [state.cards.flop1, state.cards.flop2, state.cards.flop3, state.cards.turn, state.cards.river].filter(Boolean);
+      const opponents = Number(opponentsSelect.value);
+      let sims = Number(simulationsSelect.value);
+      const mode = modeSelect.value;
+      if (mode === 'fast') sims = Math.max(1000, Math.floor(sims * 0.5));
+      if (mode === 'deep') sims = sims * 2;
+
+      statusEl.textContent = `Running ${sims.toLocaleString()} simulations...`;
+      await new Promise(r => setTimeout(r, 20));
+
+      let win = 0, tie = 0, lose = 0;
+      for (let sim = 0; sim < sims; sim++) {
+        let deck = fullDeck().filter(card => !usedCards().has(card));
+        deck = shuffle(deck);
+
+        const board = boardKnown.slice();
+        while (board.length < 5) board.push(deck.pop());
+
+        const heroScore = bestScore(hero.concat(board));
+        let bestOpponent = null;
+        let compareToOpp = 1;
+        let tiesWithBest = 0;
+
+        for (let i = 0; i < opponents; i++) {
+          const opp = [deck.pop(), deck.pop()];
+          const oppScore = bestScore(opp.concat(board));
+          if (!bestOpponent) {
+            bestOpponent = oppScore;
+            compareToOpp = compareScores(heroScore, oppScore);
+            tiesWithBest = compareToOpp === 0 ? 1 : 0;
+          } else {
+            const oppVsBest = compareScores(oppScore, bestOpponent);
+            if (oppVsBest > 0) {
+              bestOpponent = oppScore;
+              compareToOpp = compareScores(heroScore, oppScore);
+              tiesWithBest = compareToOpp === 0 ? 1 : 0;
+            } else if (oppVsBest === 0) {
+              const heroVsThis = compareScores(heroScore, oppScore);
+              if (heroVsThis === 0) tiesWithBest += 1;
+            }
+          }
+        }
+
+        if (compareToOpp > 0) win += 1;
+        else if (compareToOpp < 0) lose += 1;
+        else tie += 1;
+      }
+
+      const w = (win / sims) * 100;
+      const t = (tie / sims) * 100;
+      const l = (lose / sims) * 100;
+      winPct.textContent = `${w.toFixed(1)}%`;
+      tiePct.textContent = `${t.toFixed(1)}%`;
+      losePct.textContent = `${l.toFixed(1)}%`;
+      winBar.style.width = `${w}%`;
+      tieBar.style.width = `${t}%`;
+      loseBar.style.width = `${l}%`;
+      statusEl.textContent = `Finished ${sims.toLocaleString()} simulations against ${opponents} random opponent${opponents > 1 ? 's' : ''}.`;
+      summaryEl.innerHTML = `
+        <strong>Current setup</strong><br />
+        Hero: ${hero.map(pretty).join(' ')}<br />
+        Board: ${boardKnown.length ? boardKnown.map(pretty).join(' ') : 'Preflop'}<br />
+        Opponents: ${opponents}<br />
+        Model: Monte Carlo random-hand simulation
+      `;
+    }
+
+    document.getElementById('runBtn').onclick = calculate;
+    document.getElementById('clearBtn').onclick = clearAll;
+    document.getElementById('randomHeroBtn').onclick = randomHero;
+
+    buildSlots();
+    buildPicker();
+    resetResults();
+  </script>
+</body>
+</html>

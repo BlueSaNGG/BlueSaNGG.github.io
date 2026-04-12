@@ -112,6 +112,7 @@
     .primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
     .secondary { background: rgba(255,255,255,0.06); }
     .danger { background: rgba(248,113,113,0.14); color: #fecaca; border-color: rgba(248,113,113,0.3); }
+    .picker-anchor { scroll-margin-top: 72px; }
     .picker-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
     .picker-tab { padding:8px 12px; border-radius:999px; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); font-weight:700; }
     .picker-tab.active { background: rgba(96,165,250,0.18); border-color: rgba(96,165,250,0.45); }
@@ -254,6 +255,7 @@
           <button class="danger" id="clearBtn">Clear all</button>
         </div>
 
+        <div class="picker-anchor" id="pickerAnchor"></div>
         <div class="picker-tabs" id="pickerTabs"></div>
         <div class="picker-grid" id="picker"></div>
       </div>

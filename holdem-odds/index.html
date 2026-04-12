@@ -95,10 +95,13 @@
     .button-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
     .preset-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
     .mini-btn { padding: 10px 12px; border-radius: 999px; font-size: 0.88rem; background: rgba(255,255,255,0.05); }
-    .mobile-dock { position: sticky; bottom: 12px; z-index: 25; margin-top: 18px; padding: 14px 16px; border-radius: 18px; background: rgba(15,23,42,0.9); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(10px); display: flex; justify-content: space-between; gap: 12px; align-items: center; }
-    .dock-main { display:flex; flex-direction:column; gap:4px; }
+    .mobile-dock { position: sticky; bottom: 12px; z-index: 25; margin-top: 18px; padding: 12px 14px; border-radius: 18px; background: rgba(15,23,42,0.92); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(10px); display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .dock-main { display:flex; flex-direction:column; gap:4px; min-width:0; }
     .dock-kpi { font-size: 1.05rem; font-weight: 800; }
-    .dock-sub { color: var(--muted); font-size: 0.88rem; }
+    .dock-sub { color: var(--muted); font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dock-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+    .dock-btn { padding: 8px 10px; border-radius: 12px; font-size: 0.82rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); font-weight: 700; }
+    .dock-btn.subtle { opacity: 0.78; }
     .mobile-dock.loading { border-color: rgba(96,165,250,0.45); box-shadow: 0 0 0 1px rgba(96,165,250,0.2) inset; }
     button {
       cursor: pointer;
@@ -294,7 +297,12 @@
         <div class="dock-kpi" id="dockWin">Win --</div>
         <div class="dock-sub" id="dockAction">Action --</div>
       </div>
-      <button class="mini-btn" id="scrollResultsBtn">View details</button>
+      <div class="dock-actions">
+        <button class="dock-btn" id="dockUndoBtn">Undo</button>
+        <button class="dock-btn" id="dockClearBoardBtn">Clear board</button>
+        <button class="dock-btn subtle" id="dockClearAllBtn">Clear all</button>
+        <button class="dock-btn" id="scrollResultsBtn">Details</button>
+      </div>
     </div>
   </div>
 
@@ -929,6 +937,9 @@
     document.getElementById('randomHeroBtn').onclick = randomHero;
     document.getElementById('undoBtn').onclick = undoLastCard;
     document.getElementById('clearBoardBtn').onclick = clearBoard;
+    document.getElementById('dockUndoBtn').onclick = undoLastCard;
+    document.getElementById('dockClearBoardBtn').onclick = clearBoard;
+    document.getElementById('dockClearAllBtn').onclick = clearAll;
     document.getElementById('presetBtnVsBb').onclick = () => applyPreset('btn-bb');
     document.getElementById('presetCoVsBtn').onclick = () => applyPreset('co-btn-open');
     document.getElementById('presetSbVsBb').onclick = () => applyPreset('sb-bb');

@@ -304,6 +304,7 @@
       <div class="dock-actions">
         <button class="dock-btn subtle" id="dockClearBtn">Clear</button>
         <button class="dock-btn" id="dockPickCardsBtn">Pick cards</button>
+        <button class="dock-btn subtle" id="dockDetailsBtn">Details</button>
       </div>
     </div>
   </div>
@@ -946,6 +947,11 @@
     document.getElementById('clearBoardBtn').onclick = clearBoard;
     document.getElementById('dockClearBtn').onclick = clearAll;
     document.getElementById('dockPickCardsBtn').onclick = () => document.getElementById('pickerAnchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('dockDetailsBtn').onclick = () => {
+      summaryEl.classList.remove('hidden');
+      detailsToggleBtn.textContent = 'Hide details';
+      document.getElementById('actionAdvice').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
     document.getElementById('presetBtnVsBb').onclick = () => applyPreset('btn-bb');
     document.getElementById('presetCoVsBtn').onclick = () => applyPreset('co-btn-open');
     document.getElementById('presetSbVsBb').onclick = () => applyPreset('sb-bb');

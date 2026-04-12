@@ -153,6 +153,7 @@
     .tie { background: #fbbf24; }
     .lose { background: #f87171; }
     .meta { margin-top: 16px; color: var(--muted); line-height: 1.7; font-size: 0.95rem; }
+    .details-toggle { margin-top: 12px; display:inline-flex; align-items:center; gap:6px; padding:8px 10px; border-radius:10px; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); font-size: 0.85rem; font-weight:700; }
     .status { min-height: 24px; margin: 12px 0 0; color: #bfdbfe; }
     @media (max-width: 980px) {
       .grid { grid-template-columns: 1fr; }
@@ -284,7 +285,8 @@
           <div class="meta" id="adviceReason" style="margin-top:10px;">Pick both hero cards to unlock the first-pass preflop suggestion.</div>
         </div>
 
-        <div class="meta" id="summary">
+        <button type="button" class="details-toggle" id="detailsToggleBtn">Show details</button>
+        <div class="meta hidden" id="summary">
           <strong>How to use:</strong><br />
           • Pick 2 hole cards for Hero<br />
           • Optionally pick 0-5 board cards<br />
@@ -352,6 +354,7 @@
     const loseBar = document.getElementById('loseBar');
     const statusEl = document.getElementById('status');
     const summaryEl = document.getElementById('summary');
+    const detailsToggleBtn = document.getElementById('detailsToggleBtn');
     const actionAdviceEl = document.getElementById('actionAdvice');
     const stageLabelEl = document.getElementById('stageLabel');
     const adviceReasonEl = document.getElementById('adviceReason');
@@ -931,6 +934,10 @@
     }
 
     document.getElementById('runBtn').onclick = () => calculate(true);
+    detailsToggleBtn.onclick = () => {
+      const hidden = summaryEl.classList.toggle('hidden');
+      detailsToggleBtn.textContent = hidden ? 'Show details' : 'Hide details';
+    };
     simpleModeBtn.onclick = () => setUiMode('simple');
     advancedModeBtn.onclick = () => setUiMode('advanced');
     document.getElementById('clearBtn').onclick = clearAll;

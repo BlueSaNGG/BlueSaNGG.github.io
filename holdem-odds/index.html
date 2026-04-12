@@ -184,7 +184,7 @@
         </div>
 
         <div class="button-row">
-          <button class="primary" id="runBtn">Calculate odds</button>
+          <button class="primary" id="runBtn">Run deeper sim</button>
           <button class="secondary" id="randomHeroBtn">Random hero hand</button>
           <button class="danger" id="clearBtn">Clear all</button>
         </div>
@@ -240,7 +240,10 @@
 
     const state = {
       activeSlot: 'hero1',
-      cards: Object.fromEntries(slots.map(slot => [slot.key, null]))
+      cards: Object.fromEntries(slots.map(slot => [slot.key, null])),
+      autoCalcTimer: null,
+      isCalculating: false,
+      pendingAutoCalc: false
     };
 
     const slotRow = document.getElementById('slotRow');
@@ -311,6 +314,7 @@
             autoAdvance();
             buildSlots();
             buildPicker();
+            scheduleAutoCalculate();
           };
           picker.appendChild(btn);
         }
@@ -328,6 +332,9 @@
     }
 
     function clearAll() {
+      if (state.autoCalcTimer) clearTimeout(state.autoCalcTimer);
+      state.autoCalcTimer = null;
+      state.pendingAutoCalc = false;
       for (const slot of slots) state.cards[slot.key] = null;
       state.activeSlot = 'hero1';
       buildSlots();
@@ -339,7 +346,7 @@
       winPct.textContent = tiePct.textContent = losePct.textContent = '--';
       winBar.style.width = tieBar.style.width = loseBar.style.width = '0%';
       statusEl.textContent = 'Waiting for cards.';
-      summaryEl.innerHTML = '<strong>How to use:</strong><br />• Pick 2 hole cards for Hero<br />• Optionally pick 0-5 board cards<br />• Choose number of opponents<br />• Click calculate to run the simulation';
+      summaryEl.innerHTML = '<strong>How to use:</strong><br />• Pick 2 hole cards for Hero<br />• Optionally pick 0-5 board cards<br />• Choose number of opponents<br />• Odds now auto-update after card and setting changes';
     }
 
     function randomHero() {
@@ -350,6 +357,26 @@
       state.activeSlot = 'flop1';
       buildSlots();
       buildPicker();
+      scheduleAutoCalculate();
+    }
+
+    function canAutoCalculate() {
+      return Boolean(state.cards.hero1 && state.cards.hero2) && !state.isCalculating;
+    }
+
+    function scheduleAutoCalculate(delay = 260) {
+      if (state.autoCalcTimer) clearTimeout(state.autoCalcTimer);
+      if (!state.cards.hero1 || !state.cards.hero2) {
+        resetResults();
+        statusEl.textContent = 'Pick both hero cards to auto-calculate odds.';
+        return;
+      }
+      state.pendingAutoCalc = true;
+      statusEl.textContent = 'Updating odds...';
+      state.autoCalcTimer = setTimeout(() => {
+        state.autoCalcTimer = null;
+        if (canAutoCalculate()) calculate(false);
+      }, delay);
     }
 
     function shuffle(arr) {
@@ -435,18 +462,26 @@
       return best;
     }
 
-    async function calculate() {
+    async function calculate(forceDeep = false) {
       const hero = [state.cards.hero1, state.cards.hero2].filter(Boolean);
       if (hero.length !== 2) {
         statusEl.textContent = 'Pick both hero cards first.';
         return;
       }
+      if (state.isCalculating) {
+        state.pendingAutoCalc = true;
+        return;
+      }
+
+      state.isCalculating = true;
+      state.pendingAutoCalc = false;
       const boardKnown = [state.cards.flop1, state.cards.flop2, state.cards.flop3, state.cards.turn, state.cards.river].filter(Boolean);
       const opponents = Number(opponentsSelect.value);
       let sims = Number(simulationsSelect.value);
       const mode = modeSelect.value;
       if (mode === 'fast') sims = Math.max(1000, Math.floor(sims * 0.5));
       if (mode === 'deep') sims = sims * 2;
+      if (forceDeep) sims = Math.max(sims, 20000);
 
       statusEl.textContent = `Running ${sims.toLocaleString()} simulations...`;
       await new Promise(r => setTimeout(r, 20));
@@ -462,7 +497,6 @@
         const heroScore = bestScore(hero.concat(board));
         let bestOpponent = null;
         let compareToOpp = 1;
-        let tiesWithBest = 0;
 
         for (let i = 0; i < opponents; i++) {
           const opp = [deck.pop(), deck.pop()];
@@ -470,16 +504,13 @@
           if (!bestOpponent) {
             bestOpponent = oppScore;
             compareToOpp = compareScores(heroScore, oppScore);
-            tiesWithBest = compareToOpp === 0 ? 1 : 0;
           } else {
             const oppVsBest = compareScores(oppScore, bestOpponent);
             if (oppVsBest > 0) {
               bestOpponent = oppScore;
               compareToOpp = compareScores(heroScore, oppScore);
-              tiesWithBest = compareToOpp === 0 ? 1 : 0;
-            } else if (oppVsBest === 0) {
-              const heroVsThis = compareScores(heroScore, oppScore);
-              if (heroVsThis === 0) tiesWithBest += 1;
+            } else if (oppVsBest === 0 && compareScores(heroScore, oppScore) === 0) {
+              compareToOpp = 0;
             }
           }
         }
@@ -504,13 +535,19 @@
         Hero: ${hero.map(pretty).join(' ')}<br />
         Board: ${boardKnown.length ? boardKnown.map(pretty).join(' ') : 'Preflop'}<br />
         Opponents: ${opponents}<br />
-        Model: Monte Carlo random-hand simulation
+        Model: Monte Carlo random-hand simulation${forceDeep ? ' · deep run' : ' · auto update'}
       `;
+
+      state.isCalculating = false;
+      if (state.pendingAutoCalc) scheduleAutoCalculate(80);
     }
 
-    document.getElementById('runBtn').onclick = calculate;
+    document.getElementById('runBtn').onclick = () => calculate(true);
     document.getElementById('clearBtn').onclick = clearAll;
     document.getElementById('randomHeroBtn').onclick = randomHero;
+    opponentsSelect.onchange = () => scheduleAutoCalculate();
+    simulationsSelect.onchange = () => scheduleAutoCalculate();
+    modeSelect.onchange = () => scheduleAutoCalculate();
 
     buildSlots();
     buildPicker();

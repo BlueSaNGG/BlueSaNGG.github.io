@@ -937,13 +937,11 @@
     document.getElementById('randomHeroBtn').onclick = randomHero;
     document.getElementById('undoBtn').onclick = undoLastCard;
     document.getElementById('clearBoardBtn').onclick = clearBoard;
-    document.getElementById('dockUndoBtn').onclick = undoLastCard;
-    document.getElementById('dockClearBoardBtn').onclick = clearBoard;
-    document.getElementById('dockClearAllBtn').onclick = clearAll;
+    document.getElementById('dockClearBtn').onclick = clearAll;
+    document.getElementById('dockPickCardsBtn').onclick = () => document.getElementById('pickerAnchor').scrollIntoView({ behavior: 'smooth', block: 'start' });
     document.getElementById('presetBtnVsBb').onclick = () => applyPreset('btn-bb');
     document.getElementById('presetCoVsBtn').onclick = () => applyPreset('co-btn-open');
     document.getElementById('presetSbVsBb').onclick = () => applyPreset('sb-bb');
-    document.getElementById('scrollResultsBtn').onclick = () => document.getElementById('actionAdvice').scrollIntoView({ behavior: 'smooth', block: 'center' });
     opponentsSelect.onchange = () => scheduleAutoCalculate();
     heroPositionSelect.onchange = () => scheduleAutoCalculate();
     villainPositionSelect.onchange = () => scheduleAutoCalculate();

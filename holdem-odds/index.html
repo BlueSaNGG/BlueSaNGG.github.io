@@ -616,6 +616,78 @@
       BB: ['AA','KK','QQ','JJ','TT','99','88','77','66','55','44','AKs','AQs','AJs','ATs','A9s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','AKo','AQo','AJo','ATo','KQo','KJo','QJo']
     };
 
+
+    function analyzeBoard(boardCards) {
+      if (!boardCards.length) {
+        return { texture: 'preflop', paired: false, monotone: false, connected: false, highCard: null };
+      }
+      const vals = boardCards.map(c => rankValue[c[0]]).sort((a,b) => b-a);
+      const suits = boardCards.map(c => c[1]);
+      const counts = {};
+      for (const v of vals) counts[v] = (counts[v] || 0) + 1;
+      const paired = Object.values(counts).some(c => c >= 2);
+      const suitCounts = {};
+      for (const s of suits) suitCounts[s] = (suitCounts[s] || 0) + 1;
+      const maxSuit = Math.max(...Object.values(suitCounts));
+      const monotone = maxSuit >= 3;
+      const connected = vals.length >= 3 && (Math.max(...vals) - Math.min(...vals) <= 4 || vals.some((v, i) => i && vals[i-1] - v <= 2));
+      let texture = 'dry';
+      if (monotone && connected) texture = 'very wet';
+      else if (monotone || connected || paired) texture = 'dynamic';
+      return { texture, paired, monotone, connected, highCard: vals[0] || null };
+    }
+
+    function classifyHeroHand(heroCards, boardCards) {
+      if (heroCards.length !== 2) return { className: 'unknown', strength: 0 };
+      if (!boardCards.length) {
+        const hand = canonicalHand(heroCards);
+        const tier = handTier(hand);
+        if (tier >= 3) return { className: 'premium preflop hand', strength: 4 };
+        if (tier >= 2) return { className: 'strong preflop hand', strength: 3 };
+        if (tier >= 1) return { className: 'playable preflop hand', strength: 2 };
+        return { className: 'marginal preflop hand', strength: 1 };
+      }
+
+      const allCards = heroCards.concat(boardCards);
+      const vals = allCards.map(c => rankValue[c[0]]);
+      const boardVals = boardCards.map(c => rankValue[c[0]]);
+      const counts = {};
+      for (const v of vals) counts[v] = (counts[v] || 0) + 1;
+      const groups = Object.entries(counts).map(([v,c]) => ({v:Number(v), c})).sort((a,b)=> b.c - a.c || b.v - a.v);
+      const heroVals = heroCards.map(c => rankValue[c[0]]).sort((a,b)=>b-a);
+      const suits = allCards.map(c => c[1]);
+      const suitCounts = {};
+      for (const s of suits) suitCounts[s] = (suitCounts[s] || 0) + 1;
+      const flushDraw = Object.values(suitCounts).some(c => c === 4);
+      const unique = [...new Set(vals)].sort((a,b)=>a-b);
+      let straightDraw = false;
+      for (let i=0; i<unique.length; i++) {
+        const window = unique.slice(i, i+4);
+        if (window.length === 4 && window[3] - window[0] <= 4) { straightDraw = true; break; }
+      }
+      const topBoard = Math.max(...boardVals);
+      const heroPairOnBoard = heroVals.some(v => boardVals.includes(v));
+      const pocketPair = heroVals[0] === heroVals[1];
+      const overpair = pocketPair && heroVals[0] > topBoard;
+      const topPair = heroPairOnBoard && Math.max(...heroVals.filter(v => boardVals.includes(v))) === topBoard;
+
+      if (groups[0]?.c >= 4) return { className: 'monster made hand', strength: 7 };
+      if (groups[0]?.c === 3 && groups[1]?.c >= 2) return { className: 'full house / boat', strength: 7 };
+      const best = bestScore(allCards);
+      if (best[0] >= 5) return { className: 'flush or better', strength: 7 };
+      if (best[0] === 4) return { className: 'straight', strength: 6 };
+      if (best[0] === 3) return { className: 'trips', strength: 6 };
+      if (best[0] === 2) return { className: 'two pair', strength: 5 };
+      if (overpair) return { className: 'overpair', strength: 5 };
+      if (topPair) return { className: 'top pair', strength: 4 };
+      if (best[0] === 1) return { className: 'one pair', strength: 3 };
+      if (flushDraw && straightDraw) return { className: 'combo draw', strength: 4 };
+      if (flushDraw) return { className: 'flush draw', strength: 3 };
+      if (straightDraw) return { className: 'straight draw', strength: 3 };
+      if (heroVals.every(v => v > topBoard)) return { className: 'two overcards', strength: 2 };
+      return { className: 'air / weak showdown value', strength: 1 };
+    }
+
     function handTier(hand) {
       if (!hand) return 0;
       const premium = new Set(['AA','KK','QQ','JJ','AKs','AKo']);
@@ -639,11 +711,15 @@
       const stack = Number(stackDepthSelect.value);
       const inDefaultRange = (defaultRanges[heroPos] || []).includes(hand);
       const tier = handTier(hand);
+      const boardCards = [state.cards.flop1, state.cards.flop2, state.cards.flop3, state.cards.turn, state.cards.river].filter(Boolean);
+      const boardInfo = analyzeBoard(boardCards);
+      const heroInfo = classifyHeroHand(heroCards, boardCards);
 
       if (street !== 'Preflop') {
-        if (tier >= 2) return { action: 'Bet / value continue', reason: `${street} 阶段先按简洁模式给你默认线：这手牌仍有不错的强度，优先考虑主动拿价值，同时注意更强成牌和听牌反击。` };
-        if (tier >= 1) return { action: 'Check / call selectively', reason: `${street} 阶段这手牌更像中等强度，默认别把底池打太大，优先控池并观察对手动作。` };
-        return { action: 'Check / fold often', reason: `${street} 阶段当前牌力不强，简洁模式下默认走更保守线路，除非你有额外读牌依据。` };
+        if (heroInfo.strength >= 6) return { action: 'Bet / raise for value', reason: `${street} 面你已经是 ${heroInfo.className}，而且牌面 ${boardInfo.texture}，默认应主动打价值，同时防止免费牌。` };
+        if (heroInfo.strength >= 4) return { action: 'Value bet small / call', reason: `${street} 面你是 ${heroInfo.className}，属于可以继续拿价值的中强牌；在 ${boardInfo.texture} 牌面上先走更稳的小额价值线更合理。` };
+        if (heroInfo.strength >= 3) return { action: 'Check / call with equity', reason: `${street} 面你现在更像 ${heroInfo.className}；牌面 ${boardInfo.texture}，保留权益、控制底池通常比盲目进攻更好。` };
+        return { action: 'Check / fold often', reason: `${street} 面当前更接近 ${heroInfo.className}，而且牌面 ${boardInfo.texture}；简洁模式下默认走更保守线路，除非你有明确 exploit 读牌。` };
       }
 
       if (facing === 'unopened') {

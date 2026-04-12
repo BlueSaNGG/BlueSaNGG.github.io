@@ -76,8 +76,12 @@
     }
     .slot-label { color: var(--muted); font-size: 0.8rem; margin-bottom: 8px; }
     .slot-value { font-size: 1.05rem; font-weight: 700; }
+    .mode-toggle { display:flex; gap:8px; margin-bottom:14px; }
+    .mode-btn { padding:10px 14px; border-radius:999px; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); font-weight:700; }
+    .mode-btn.active { background: rgba(52,211,153,0.16); border-color: rgba(52,211,153,0.45); }
     .controls { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-bottom: 18px; }
     .controls-secondary { grid-template-columns: minmax(0,1fr); }
+    .hidden { display:none !important; }
     label { display: flex; flex-direction: column; gap: 8px; font-size: 0.92rem; color: var(--muted); }
     select, button {
       border: 1px solid var(--border);
@@ -172,11 +176,12 @@
 
         <div class="slot-row" id="slotRow"></div>
 
-        <div class="controls">
-          <label>
-            Opponents
-            <select id="opponents"></select>
-          </label>
+        <div class="mode-toggle">
+          <button type="button" class="mode-btn active" id="simpleModeBtn">Simple</button>
+          <button type="button" class="mode-btn" id="advancedModeBtn">Advanced</button>
+        </div>
+
+        <div class="controls" id="primaryControls">
           <label>
             Hero position
             <select id="heroPosition"></select>
@@ -186,41 +191,50 @@
             <select id="villainPosition"></select>
           </label>
           <label>
-            Facing action
-            <select id="facingAction">
-              <option value="unopened" selected>Unopened pot</option>
-              <option value="facing-open">Facing open</option>
-              <option value="facing-3bet">Facing 3-bet</option>
-            </select>
-          </label>
-          <label>
-            Effective stack
-            <select id="stackDepth">
-              <option value="20">20bb</option>
-              <option value="40">40bb</option>
-              <option value="100" selected>100bb</option>
-            </select>
-          </label>
-          <label>
-            Simulations
-            <select id="simulations">
-              <option value="2000">2,000</option>
-              <option value="5000" selected>5,000</option>
-              <option value="10000">10,000</option>
-              <option value="20000">20,000</option>
-            </select>
+            Opponents
+            <select id="opponents"></select>
           </label>
         </div>
 
-        <div class="controls controls-secondary">
-          <label>
-            Speed note
-            <select id="mode">
-              <option value="normal" selected>Balanced</option>
-              <option value="fast">Fast</option>
-              <option value="deep">More accurate</option>
-            </select>
-          </label>
+        <div id="advancedPanel" class="hidden">
+          <div class="controls">
+            <label>
+              Facing action
+              <select id="facingAction">
+                <option value="unopened" selected>Unopened pot</option>
+                <option value="facing-open">Facing open</option>
+                <option value="facing-3bet">Facing 3-bet</option>
+              </select>
+            </label>
+            <label>
+              Effective stack
+              <select id="stackDepth">
+                <option value="20">20bb</option>
+                <option value="40">40bb</option>
+                <option value="100" selected>100bb</option>
+              </select>
+            </label>
+            <label>
+              Simulations
+              <select id="simulations">
+                <option value="2000">2,000</option>
+                <option value="5000" selected>5,000</option>
+                <option value="10000">10,000</option>
+                <option value="20000">20,000</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="controls controls-secondary">
+            <label>
+              Speed note
+              <select id="mode">
+                <option value="normal" selected>Balanced</option>
+                <option value="fast">Fast</option>
+                <option value="deep">More accurate</option>
+              </select>
+            </label>
+          </div>
         </div>
 
         <div class="preset-row">
@@ -260,7 +274,7 @@
         <p class="status" id="status">Waiting for cards.</p>
 
         <div class="stat" style="margin-top:16px;">
-          <div class="stat-label">Suggested action</div>
+          <div class="stat-label" id="stageLabel">Suggested action</div>
           <div class="stat-value" id="actionAdvice" style="font-size:1.2rem;">--</div>
           <div class="meta" id="adviceReason" style="margin-top:10px;">Pick both hero cards to unlock the first-pass preflop suggestion.</div>
         </div>
@@ -308,7 +322,8 @@
       isCalculating: false,
       pendingAutoCalc: false,
       history: [],
-      pickerSuitFilter: 'all'
+      pickerSuitFilter: 'all',
+      uiMode: 'simple'
     };
 
     const slotRow = document.getElementById('slotRow');
@@ -330,10 +345,14 @@
     const statusEl = document.getElementById('status');
     const summaryEl = document.getElementById('summary');
     const actionAdviceEl = document.getElementById('actionAdvice');
+    const stageLabelEl = document.getElementById('stageLabel');
     const adviceReasonEl = document.getElementById('adviceReason');
     const dockWinEl = document.getElementById('dockWin');
     const dockActionEl = document.getElementById('dockAction');
     const mobileDockEl = document.querySelector('.mobile-dock');
+    const simpleModeBtn = document.getElementById('simpleModeBtn');
+    const advancedModeBtn = document.getElementById('advancedModeBtn');
+    const advancedPanel = document.getElementById('advancedPanel');
 
     for (let i = 1; i <= 8; i++) {
       const opt = document.createElement('option');
@@ -522,6 +541,32 @@
       scheduleAutoCalculate();
     }
 
+
+    function detectStreet() {
+      const boardCount = [state.cards.flop1, state.cards.flop2, state.cards.flop3, state.cards.turn, state.cards.river].filter(Boolean).length;
+      if (boardCount >= 5) return 'River';
+      if (boardCount === 4) return 'Turn';
+      if (boardCount >= 3) return 'Flop';
+      return 'Preflop';
+    }
+
+    function syncSimpleFacingAction() {
+      if (state.uiMode !== 'simple') return;
+      const street = detectStreet();
+      if (street !== 'Preflop') return;
+      facingActionSelect.value = 'unopened';
+    }
+
+    function setUiMode(mode) {
+      state.uiMode = mode;
+      const simple = mode === 'simple';
+      simpleModeBtn.classList.toggle('active', simple);
+      advancedModeBtn.classList.toggle('active', !simple);
+      advancedPanel.classList.toggle('hidden', simple);
+      syncSimpleFacingAction();
+      scheduleAutoCalculate();
+    }
+
     function setDockLoading(isLoading, message = 'Updating…') {
       if (!mobileDockEl) return;
       mobileDockEl.classList.toggle('loading', isLoading);
@@ -589,10 +634,17 @@
       const hand = canonicalHand(heroCards);
       const heroPos = heroPositionSelect.value;
       const villainPos = villainPositionSelect.value;
-      const facing = facingActionSelect.value;
+      const street = detectStreet();
+      const facing = street === 'Preflop' ? facingActionSelect.value : 'postflop';
       const stack = Number(stackDepthSelect.value);
       const inDefaultRange = (defaultRanges[heroPos] || []).includes(hand);
       const tier = handTier(hand);
+
+      if (street !== 'Preflop') {
+        if (tier >= 2) return { action: 'Bet / value continue', reason: `${street} 阶段先按简洁模式给你默认线：这手牌仍有不错的强度，优先考虑主动拿价值，同时注意更强成牌和听牌反击。` };
+        if (tier >= 1) return { action: 'Check / call selectively', reason: `${street} 阶段这手牌更像中等强度，默认别把底池打太大，优先控池并观察对手动作。` };
+        return { action: 'Check / fold often', reason: `${street} 阶段当前牌力不强，简洁模式下默认走更保守线路，除非你有额外读牌依据。` };
+      }
 
       if (facing === 'unopened') {
         if (inDefaultRange || heroPos === 'BTN' && tier >= 1) {
@@ -774,18 +826,20 @@
       statusEl.textContent = `Finished ${sims.toLocaleString()} simulations against ${opponents} random opponent${opponents > 1 ? 's' : ''}.`;
       const advice = getAdvice(hero);
       actionAdviceEl.textContent = advice.action;
+      stageLabelEl.textContent = `${detectStreet()} advice`;
       adviceReasonEl.innerHTML = `${advice.reason}<br /><br />Default villain range anchor: <strong>${villainPositionSelect.value}</strong> · Facing: <strong>${facingActionSelect.value}</strong> · Stack: <strong>${stackDepthSelect.value}bb</strong>`;
       dockWinEl.textContent = `Win ${w.toFixed(1)}%`;
       dockActionEl.textContent = advice.action;
       setDockLoading(false);
       summaryEl.innerHTML = `
         <strong>Current setup</strong><br />
+        Street: ${detectStreet()}<br />
         Hero: ${hero.map(pretty).join(' ')} (${canonicalHand(hero)})<br />
         Board: ${boardKnown.length ? boardKnown.map(pretty).join(' ') : 'Preflop'}<br />
         Hero position: ${heroPositionSelect.value}<br />
         Villain position: ${villainPositionSelect.value}<br />
         Opponents: ${opponents}<br />
-        Model: Monte Carlo random-hand simulation${forceDeep ? ' · deep run' : ' · auto update'}
+        Mode: ${state.uiMode === 'simple' ? 'Simple assistant' : 'Advanced'} · Model: Monte Carlo${forceDeep ? ' · deep run' : ' · auto update'}
       `;
 
       state.isCalculating = false;
@@ -793,6 +847,8 @@
     }
 
     document.getElementById('runBtn').onclick = () => calculate(true);
+    simpleModeBtn.onclick = () => setUiMode('simple');
+    advancedModeBtn.onclick = () => setUiMode('advanced');
     document.getElementById('clearBtn').onclick = clearAll;
     document.getElementById('randomHeroBtn').onclick = randomHero;
     document.getElementById('undoBtn').onclick = undoLastCard;

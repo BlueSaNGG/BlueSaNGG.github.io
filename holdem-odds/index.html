@@ -104,6 +104,9 @@
     .primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
     .secondary { background: rgba(255,255,255,0.06); }
     .danger { background: rgba(248,113,113,0.14); color: #fecaca; border-color: rgba(248,113,113,0.3); }
+    .picker-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .picker-tab { padding:8px 12px; border-radius:999px; background: rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); font-weight:700; }
+    .picker-tab.active { background: rgba(96,165,250,0.18); border-color: rgba(96,165,250,0.45); }
     .picker-grid { display: grid; grid-template-columns: repeat(13, minmax(0,1fr)); gap: 8px; }
     .pick-card {
       border-radius: 12px;
@@ -233,6 +236,7 @@
           <button class="danger" id="clearBtn">Clear all</button>
         </div>
 
+        <div class="picker-tabs" id="pickerTabs"></div>
         <div class="picker-grid" id="picker"></div>
       </div>
 
@@ -302,11 +306,13 @@
       autoCalcTimer: null,
       isCalculating: false,
       pendingAutoCalc: false,
-      history: []
+      history: [],
+      pickerSuitFilter: 'all'
     };
 
     const slotRow = document.getElementById('slotRow');
     const picker = document.getElementById('picker');
+    const pickerTabs = document.getElementById('pickerTabs');
     const opponentsSelect = document.getElementById('opponents');
     const heroPositionSelect = document.getElementById('heroPosition');
     const villainPositionSelect = document.getElementById('villainPosition');
@@ -378,10 +384,34 @@
       return card ? `${card[0]}${suitSymbols[card[1]]}` : 'Empty';
     }
 
+    function buildPickerTabs() {
+      pickerTabs.innerHTML = '';
+      const tabs = [
+        { key: 'all', label: 'All' },
+        { key: 's', label: '♠' },
+        { key: 'h', label: '♥' },
+        { key: 'd', label: '♦' },
+        { key: 'c', label: '♣' }
+      ];
+      for (const tab of tabs) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `picker-tab ${state.pickerSuitFilter === tab.key ? 'active' : ''}`;
+        btn.textContent = tab.label;
+        btn.onclick = () => {
+          state.pickerSuitFilter = tab.key;
+          buildPickerTabs();
+          buildPicker();
+        };
+        pickerTabs.appendChild(btn);
+      }
+    }
+
     function buildPicker() {
       picker.innerHTML = '';
       const used = usedCards();
-      for (const s of suitOrder) {
+      const suitsToShow = state.pickerSuitFilter === 'all' ? suitOrder : [state.pickerSuitFilter];
+      for (const s of suitsToShow) {
         for (const r of ranks) {
           const card = r + s;
           const btn = document.createElement('button');
@@ -418,6 +448,7 @@
       for (const key of ['flop1','flop2','flop3','turn','river']) state.cards[key] = null;
       state.activeSlot = 'flop1';
       buildSlots();
+      buildPickerTabs();
       buildPicker();
       scheduleAutoCalculate();
     }
@@ -428,6 +459,7 @@
       state.cards[lastFilled.key] = null;
       state.activeSlot = lastFilled.key;
       buildSlots();
+      buildPickerTabs();
       buildPicker();
       scheduleAutoCalculate();
     }
@@ -459,6 +491,7 @@
       for (const slot of slots) state.cards[slot.key] = null;
       state.activeSlot = 'hero1';
       buildSlots();
+      buildPickerTabs();
       buildPicker();
       resetResults();
     }
@@ -481,6 +514,7 @@
       state.cards.hero2 = deck.pop();
       state.activeSlot = 'flop1';
       buildSlots();
+      buildPickerTabs();
       buildPicker();
       scheduleAutoCalculate();
     }
@@ -762,6 +796,7 @@
     modeSelect.onchange = () => scheduleAutoCalculate();
 
     buildSlots();
+    buildPickerTabs();
     buildPicker();
     resetResults();
   </script>

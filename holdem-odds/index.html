@@ -95,6 +95,7 @@
     .dock-main { display:flex; flex-direction:column; gap:4px; }
     .dock-kpi { font-size: 1.05rem; font-weight: 800; }
     .dock-sub { color: var(--muted); font-size: 0.88rem; }
+    .mobile-dock.loading { border-color: rgba(96,165,250,0.45); box-shadow: 0 0 0 1px rgba(96,165,250,0.2) inset; }
     button {
       cursor: pointer;
       font-weight: 700;
@@ -332,6 +333,7 @@
     const adviceReasonEl = document.getElementById('adviceReason');
     const dockWinEl = document.getElementById('dockWin');
     const dockActionEl = document.getElementById('dockAction');
+    const mobileDockEl = document.querySelector('.mobile-dock');
 
     for (let i = 1; i <= 8; i++) {
       const opt = document.createElement('option');
@@ -505,6 +507,7 @@
       adviceReasonEl.innerHTML = 'Pick both hero cards to unlock the first-pass preflop suggestion.';
       dockWinEl.textContent = 'Win --';
       dockActionEl.textContent = 'Action --';
+      setDockLoading(false);
     }
 
     function randomHero() {
@@ -519,11 +522,19 @@
       scheduleAutoCalculate();
     }
 
+    function setDockLoading(isLoading, message = 'Updating…') {
+      if (!mobileDockEl) return;
+      mobileDockEl.classList.toggle('loading', isLoading);
+      if (isLoading) {
+        dockActionEl.textContent = message;
+      }
+    }
+
     function canAutoCalculate() {
       return Boolean(state.cards.hero1 && state.cards.hero2) && !state.isCalculating;
     }
 
-    function scheduleAutoCalculate(delay = 260) {
+    function scheduleAutoCalculate(delay = 120) {
       if (state.autoCalcTimer) clearTimeout(state.autoCalcTimer);
       if (!state.cards.hero1 || !state.cards.hero2) {
         resetResults();
@@ -532,6 +543,7 @@
       }
       state.pendingAutoCalc = true;
       statusEl.textContent = 'Updating odds...';
+      setDockLoading(true);
       state.autoCalcTimer = setTimeout(() => {
         state.autoCalcTimer = null;
         if (canAutoCalculate()) calculate(false);
@@ -713,6 +725,7 @@
       if (forceDeep) sims = Math.max(sims, 20000);
 
       statusEl.textContent = `Running ${sims.toLocaleString()} simulations...`;
+      setDockLoading(true, 'Calculating…');
       await new Promise(r => setTimeout(r, 20));
 
       let win = 0, tie = 0, lose = 0;
@@ -764,6 +777,7 @@
       adviceReasonEl.innerHTML = `${advice.reason}<br /><br />Default villain range anchor: <strong>${villainPositionSelect.value}</strong> · Facing: <strong>${facingActionSelect.value}</strong> · Stack: <strong>${stackDepthSelect.value}bb</strong>`;
       dockWinEl.textContent = `Win ${w.toFixed(1)}%`;
       dockActionEl.textContent = advice.action;
+      setDockLoading(false);
       summaryEl.innerHTML = `
         <strong>Current setup</strong><br />
         Hero: ${hero.map(pretty).join(' ')} (${canonicalHand(hero)})<br />

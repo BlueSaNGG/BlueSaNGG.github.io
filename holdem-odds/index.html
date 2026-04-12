@@ -78,6 +78,7 @@
     .slot-label { color: var(--muted); font-size: 0.8rem; margin-bottom: 8px; }
     .slot-value { font-size: 1.05rem; font-weight: 700; }
     .controls { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-bottom: 18px; }
+    .controls-secondary { grid-template-columns: minmax(0,1fr); }
     label { display: flex; flex-direction: column; gap: 8px; font-size: 0.92rem; color: var(--muted); }
     select, button {
       border: 1px solid var(--border);
@@ -165,6 +166,30 @@
             <select id="opponents"></select>
           </label>
           <label>
+            Hero position
+            <select id="heroPosition"></select>
+          </label>
+          <label>
+            Villain position
+            <select id="villainPosition"></select>
+          </label>
+          <label>
+            Facing action
+            <select id="facingAction">
+              <option value="unopened" selected>Unopened pot</option>
+              <option value="facing-open">Facing open</option>
+              <option value="facing-3bet">Facing 3-bet</option>
+            </select>
+          </label>
+          <label>
+            Effective stack
+            <select id="stackDepth">
+              <option value="20">20bb</option>
+              <option value="40">40bb</option>
+              <option value="100" selected>100bb</option>
+            </select>
+          </label>
+          <label>
             Simulations
             <select id="simulations">
               <option value="2000">2,000</option>
@@ -173,6 +198,9 @@
               <option value="20000">20,000</option>
             </select>
           </label>
+        </div>
+
+        <div class="controls controls-secondary">
           <label>
             Speed note
             <select id="mode">
@@ -194,7 +222,7 @@
 
       <div class="card">
         <h2 class="section-title">2. Results</h2>
-        <p class="hint">MVP assumption: all opponents hold random valid hands from the remaining deck.</p>
+        <p class="hint">Current version: equity still runs versus random valid hands, but the assistant now adds simple preflop position context and a first-pass action suggestion.</p>
 
         <div class="results">
           <div class="stat"><div class="stat-label">Win</div><div class="stat-value" id="winPct">--</div></div>
@@ -209,6 +237,12 @@
         </div>
 
         <p class="status" id="status">Waiting for cards.</p>
+
+        <div class="stat" style="margin-top:16px;">
+          <div class="stat-label">Suggested action</div>
+          <div class="stat-value" id="actionAdvice" style="font-size:1.2rem;">--</div>
+          <div class="meta" id="adviceReason" style="margin-top:10px;">Pick both hero cards to unlock the first-pass preflop suggestion.</div>
+        </div>
 
         <div class="meta" id="summary">
           <strong>How to use:</strong><br />
@@ -249,6 +283,10 @@
     const slotRow = document.getElementById('slotRow');
     const picker = document.getElementById('picker');
     const opponentsSelect = document.getElementById('opponents');
+    const heroPositionSelect = document.getElementById('heroPosition');
+    const villainPositionSelect = document.getElementById('villainPosition');
+    const facingActionSelect = document.getElementById('facingAction');
+    const stackDepthSelect = document.getElementById('stackDepth');
     const simulationsSelect = document.getElementById('simulations');
     const modeSelect = document.getElementById('mode');
     const winPct = document.getElementById('winPct');
@@ -259,6 +297,8 @@
     const loseBar = document.getElementById('loseBar');
     const statusEl = document.getElementById('status');
     const summaryEl = document.getElementById('summary');
+    const actionAdviceEl = document.getElementById('actionAdvice');
+    const adviceReasonEl = document.getElementById('adviceReason');
 
     for (let i = 1; i <= 8; i++) {
       const opt = document.createElement('option');
@@ -266,6 +306,21 @@
       opt.textContent = String(i);
       if (i === 1) opt.selected = true;
       opponentsSelect.appendChild(opt);
+    }
+
+    const positions = ['UTG', 'MP', 'CO', 'BTN', 'SB', 'BB'];
+    for (const pos of positions) {
+      const heroOpt = document.createElement('option');
+      heroOpt.value = pos;
+      heroOpt.textContent = pos;
+      if (pos === 'CO') heroOpt.selected = true;
+      heroPositionSelect.appendChild(heroOpt);
+
+      const villainOpt = document.createElement('option');
+      villainOpt.value = pos;
+      villainOpt.textContent = pos;
+      if (pos === 'BTN') villainOpt.selected = true;
+      villainPositionSelect.appendChild(villainOpt);
     }
 
     function buildSlots() {
@@ -346,7 +401,9 @@
       winPct.textContent = tiePct.textContent = losePct.textContent = '--';
       winBar.style.width = tieBar.style.width = loseBar.style.width = '0%';
       statusEl.textContent = 'Waiting for cards.';
-      summaryEl.innerHTML = '<strong>How to use:</strong><br />• Pick 2 hole cards for Hero<br />• Optionally pick 0-5 board cards<br />• Choose number of opponents<br />• Odds now auto-update after card and setting changes';
+      summaryEl.innerHTML = '<strong>How to use:</strong><br />• Pick 2 hole cards for Hero<br />• Optionally pick 0-5 board cards<br />• Choose positions / facing action / stack depth<br />• Odds now auto-update after card and setting changes';
+      actionAdviceEl.textContent = '--';
+      adviceReasonEl.innerHTML = 'Pick both hero cards to unlock the first-pass preflop suggestion.';
     }
 
     function randomHero() {
@@ -377,6 +434,76 @@
         state.autoCalcTimer = null;
         if (canAutoCalculate()) calculate(false);
       }, delay);
+    }
+
+
+    function canonicalHand(heroCards) {
+      if (heroCards.length !== 2) return null;
+      const ranksOnly = heroCards.map(c => c[0]);
+      const values = ranksOnly.map(r => rankValue[r]);
+      const suited = heroCards[0][1] === heroCards[1][1];
+      const paired = ranksOnly[0] === ranksOnly[1];
+      if (paired) return ranksOnly[0] + ranksOnly[1];
+      const sorted = [0,1].sort((a,b) => values[b] - values[a]).map(i => ranksOnly[i]);
+      return sorted[0] + sorted[1] + (suited ? 's' : 'o');
+    }
+
+    const defaultRanges = {
+      UTG: ['AA','KK','QQ','JJ','TT','99','AKs','AQs','AJs','KQs','AKo'],
+      MP: ['AA','KK','QQ','JJ','TT','99','88','AKs','AQs','AJs','ATs','KQs','KJs','QJs','AKo','AQo'],
+      CO: ['AA','KK','QQ','JJ','TT','99','88','77','AKs','AQs','AJs','ATs','A9s','KQs','KJs','QJs','JTs','T9s','AKo','AQo','AJo','KQo'],
+      BTN: ['AA','KK','QQ','JJ','TT','99','88','77','66','55','AKs','AQs','AJs','ATs','A9s','A8s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','AKo','AQo','AJo','ATo','KQo','KJo','QJo'],
+      SB: ['AA','KK','QQ','JJ','TT','99','88','77','66','AKs','AQs','AJs','ATs','A9s','KQs','KJs','QJs','JTs','T9s','AKo','AQo','AJo','KQo'],
+      BB: ['AA','KK','QQ','JJ','TT','99','88','77','66','55','44','AKs','AQs','AJs','ATs','A9s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','AKo','AQo','AJo','ATo','KQo','KJo','QJo']
+    };
+
+    function handTier(hand) {
+      if (!hand) return 0;
+      const premium = new Set(['AA','KK','QQ','JJ','AKs','AKo']);
+      const strong = new Set(['TT','99','AQs','AQo','AJs','AJo','KQs']);
+      const playable = new Set(['88','77','ATs','ATo','KJs','KQo','QJs','JTs','T9s','A9s','KTs','QTs','98s']);
+      if (premium.has(hand)) return 3;
+      if (strong.has(hand)) return 2;
+      if (playable.has(hand)) return 1;
+      return 0;
+    }
+
+    function getAdvice(heroCards) {
+      if (heroCards.length !== 2) {
+        return { action: '--', reason: 'Pick both hero cards first.' };
+      }
+      const hand = canonicalHand(heroCards);
+      const heroPos = heroPositionSelect.value;
+      const villainPos = villainPositionSelect.value;
+      const facing = facingActionSelect.value;
+      const stack = Number(stackDepthSelect.value);
+      const inDefaultRange = (defaultRanges[heroPos] || []).includes(hand);
+      const tier = handTier(hand);
+
+      if (facing === 'unopened') {
+        if (inDefaultRange || heroPos === 'BTN' && tier >= 1) {
+          return { action: 'Open raise', reason: `${heroPos} 默认开池范围里可以继续；${hand} 具备足够的高张/连通性，适合主动拿下底池。` };
+        }
+        return { action: 'Fold', reason: `${heroPos} 位默认开池范围偏紧，这手 ${hand} 在无人入池场景里通常不值得先投入。` };
+      }
+
+      if (facing === 'facing-open') {
+        if (tier === 3 || (stack <= 40 && ['QQ','JJ','AKs','AKo','AQs'].includes(hand))) {
+          return { action: '3-bet / jam', reason: `面对 ${villainPos} open，${hand} 属于高质量继续牌；在 ${stack}bb 左右也更适合主动施压。` };
+        }
+        if (tier >= 2 || (heroPos === 'BB' && tier >= 1)) {
+          return { action: 'Call or mix', reason: `这手牌对 ${villainPos} 默认开池范围通常还能继续，但更偏向跟注/混合而不是无脑加注。` };
+        }
+        return { action: 'Fold', reason: `${hand} 面对默认 open range 通常 equity 不够，且容易被更好高张主导。` };
+      }
+
+      if (tier === 3 || (stack <= 20 && tier >= 2)) {
+        return { action: 'Continue aggressively', reason: `面对 3-bet 时，${hand} 仍属于可以继续的上层区间；短筹码下更接近 4-bet / jam。` };
+      }
+      if (tier >= 2 && stack >= 100) {
+        return { action: 'Mostly call / evaluate', reason: `这手牌还有继续空间，但面对 3-bet 需要看位置和对手倾向，默认不建议过宽继续。` };
+      }
+      return { action: 'Fold', reason: `${hand} 面对 3-bet 默认继续频率不高，除非你有明确读牌或对手过松。` };
     }
 
     function shuffle(arr) {
@@ -530,10 +657,15 @@
       tieBar.style.width = `${t}%`;
       loseBar.style.width = `${l}%`;
       statusEl.textContent = `Finished ${sims.toLocaleString()} simulations against ${opponents} random opponent${opponents > 1 ? 's' : ''}.`;
+      const advice = getAdvice(hero);
+      actionAdviceEl.textContent = advice.action;
+      adviceReasonEl.innerHTML = `${advice.reason}<br /><br />Default villain range anchor: <strong>${villainPositionSelect.value}</strong> · Facing: <strong>${facingActionSelect.value}</strong> · Stack: <strong>${stackDepthSelect.value}bb</strong>`;
       summaryEl.innerHTML = `
         <strong>Current setup</strong><br />
-        Hero: ${hero.map(pretty).join(' ')}<br />
+        Hero: ${hero.map(pretty).join(' ')} (${canonicalHand(hero)})<br />
         Board: ${boardKnown.length ? boardKnown.map(pretty).join(' ') : 'Preflop'}<br />
+        Hero position: ${heroPositionSelect.value}<br />
+        Villain position: ${villainPositionSelect.value}<br />
         Opponents: ${opponents}<br />
         Model: Monte Carlo random-hand simulation${forceDeep ? ' · deep run' : ' · auto update'}
       `;
@@ -546,6 +678,10 @@
     document.getElementById('clearBtn').onclick = clearAll;
     document.getElementById('randomHeroBtn').onclick = randomHero;
     opponentsSelect.onchange = () => scheduleAutoCalculate();
+    heroPositionSelect.onchange = () => scheduleAutoCalculate();
+    villainPositionSelect.onchange = () => scheduleAutoCalculate();
+    facingActionSelect.onchange = () => scheduleAutoCalculate();
+    stackDepthSelect.onchange = () => scheduleAutoCalculate();
     simulationsSelect.onchange = () => scheduleAutoCalculate();
     modeSelect.onchange = () => scheduleAutoCalculate();
 

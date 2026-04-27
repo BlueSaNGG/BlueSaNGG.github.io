@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" id="top">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QI JIN - Professional Portfolio</title>
+  <style>
+    html { scroll-behavior: smooth; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+      color: #333;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+      padding: 50px;
+    }
+    .header-content {
+      display: flex;
+      align-items: center;
+      gap: 35px;
+    }
+    .profile-photo {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 4px solid white;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+      flex-shrink: 0;
+      box-shadow: 0 14px 36px rgba(0,0,0,0.22);
+      background: rgba(255,255,255,0.12);
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 16px;
+    }
+    .header-text h1 {
+      font-size: 2.4em;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .header-text .title {
+      font-size: 1.1em;
+      opacity: 0.9;
+      margin-bottom: 15px;
+    }
+    .header-text .tagline {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      padding: 5px 14px;
+      border-radius: 15px;
+      font-size: 0.85em;
+    }
+    .header-contact {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .header-contact a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95em;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+    }
+    .header-contact a:hover {
+      background: rgba(233,69,96,0.92);
+      border-color: rgba(233,69,96,0.92);
+    }
+    nav {
+      background: #fff;
+      padding: 15px 50px;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    nav a {
+      color: #1a1a2e;
+      text-decoration: none;
+      font-weight: 600;
+      margin-right: 25px;
+      transition: color 0.3s, background-color 0.3s;
+      padding: 6px 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    nav a:hover { color: #e94560; }
+    nav a.active {
+      color: white;
+      background: #e94560;
+    }
+    .content { padding: 45px 50px; }
+    section { margin-bottom: 45px; }
+    section h2 {
+      color: #1a1a2e;
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e94560;
+      display: inline-block;
+    }
+    section h3 {
+      color: #16213e;
+      font-size: 1.15em;
+      margin: 25px 0 12px;
+      font-weight: 600;
+    }
+    section h4 {
+      color: #1a1a2e;
+      font-size: 1.05em;
+      margin: 20px 0 8px;
+      font-weight: 600;
+    }
+    p { margin: 12px 0; color: #555; }
+    ul { margin: 12px 0 12px 25px; }
+    li { margin: 8px 0; color: #555; }
+    .card {
+      background: #f8f9fa;
+      padding: 22px 28px;
+      margin: 18px 0;
+      border-radius: 8px;
+      border-left: 4px solid #e94560;
+    }
+    .experience-item { margin: 25px 0; }
+    .experience-item h4 {
+      color: #1a1a2e;
+      font-size: 1.1em;
+      margin-bottom: 5px;
+    }
+    .experience-item .company {
+      color: #e94560;
+      font-weight: 600;
+    }
+    .experience-item .period {
+      color: #888;
+      font-size: 0.9em;
+      margin-bottom: 12px;
+    }
+    .experience-item ul { margin-top: 8px; }
+    .experience-item li {
+      font-size: 0.95em;
+      margin: 6px 0;
+    }
+    .artifact-section {
+      background: #fafafa;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 30px;
+      margin: 25px 0;
+    }
+    .artifact-title {
+      color: #e94560;
+      font-size: 1.1em;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    .artifact-link {
+      display: inline-block;
+      margin-top: 10px;
+      font-weight: 600;
+      color: #e94560;
+      text-decoration: none;
+    }
+    .artifact-link:hover { text-decoration: underline; }
+    .reference-list {
+      background: #f8f9fa;
+      padding: 22px 28px;
+      border-radius: 8px;
+    }
+    .reference-list li {
+      font-size: 0.9em;
+      margin: 8px 0;
+    }
+    .reference-list em { color: #16213e; }
+    .back-to-top {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #e94560;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+      z-index: 1100;
+    }
+    .back-to-top:hover {
+      background: #d73752;
+    }
+    footer {
+      background: #1a1a2e;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 25px;
+      font-size: 0.9em;
+    }
+    footer a { color: #e94560; text-decoration: none; }
+    @media (max-width: 768px) {
+      .header-content { flex-direction: column; text-align: center; }
+      header, nav, .content { padding: 30px 20px; }
+    }
+  
+    .site-nav-pill {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 2000;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .site-nav-pill a {
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.84);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: white;
+      box-shadow: 0 10px 24px rgba(15,23,42,0.18);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+    .site-nav-pill a:hover {
+      background: rgba(233,69,96,0.96);
+      border-color: rgba(233,69,96,0.96);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .site-nav-pill {
+        top: 12px;
+        right: 12px;
+        left: 12px;
+        justify-content: flex-end;
+      }
+      .site-nav-pill a {
+        font-size: 0.88rem;
+        padding: 9px 12px;
+      }
+    }
+</style>
+</head>
+
+<body>
+  <div class="site-nav-pill"><a href="https://bluesangg.github.io/">Home</a></div>
+
+  <a class="back-to-top" href="#top" aria-label="Back to top">↑</a>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <img class="profile-photo" src="/images/profile/qi-jin-portrait.jpg" alt="Portrait of Qi Jin" />
+        <div class="header-text">
+          <h1>QI JIN</h1>
+          <p class="title">Machine Learning Fundamentals Portfolio | Indiana Wesleyan University</p>
+          <span class="tagline">Software Engineer | AI/ML Portfolio</span>
+          <div class="header-contact">
+            <a href="mailto:bluesang217@gmail.com">bluesang217@gmail.com</a>
+            <a href="https://www.linkedin.com/in/qijin66677" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://github.com/BlueSaNGG" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <nav>
+      <a href="#bio">Bio</a>
+      <a href="#value">Value Proposition</a>
+      <a href="#education">Education</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#artifact">Artifacts</a>
+      <a href="#references">References</a>
+    </nav>
+
+    <div class="content">
+      <section id="bio">
+        <h2>Professional Bio</h2>
+        <p>I am a <strong>software engineer</strong> with experience building automation, release infrastructure, and developer tooling for mobile engineering teams. Through both industry work and AI/ML coursework, I have developed a strong interest in the <strong>responsible use of AI and machine learning</strong>, especially where technical problem solving, communication, and practical system improvement come together.</p>
+      </section>
+
+      <section id="value">
+        <h2>Value Proposition and Audience</h2>
+        <div class="card">
+          <h4>Personal Value Proposition</h4>
+          <p>I bring a <strong>systems-minded, adaptable, and communication-aware</strong> approach to technical work. My background includes workflow automation, developer productivity, release engineering, and the ability to translate complex ideas into clear, useful explanations for different audiences.</p>
+        </div>
+        <div class="card">
+          <h4>Target Audience</h4>
+          <p>Future employer, mentor, or academic reviewer seeking evidence of <strong>technical problem solving, practical impact, and continued growth</strong> in software engineering and AI/ML-related work.</p>
+        </div>
+      </section>
+
+      <section id="education">
+        <h2>Education</h2>
+
+        <div class="experience-item">
+          <h4>University of Illinois Urbana-Champaign</h4>
+          <p class="company">M.S. in Biological and Computer Engineering</p>
+          <p class="period">Jan. 2021 – Dec. 2022 | Champaign, IL</p>
+          <p><em>Relevant coursework:</em> Database Systems, Parallel Computer Architecture, Applied Parallel Programming, Artificial Intelligence, Programming Languages &amp; Compilers, System Programming, Topics in Software Engineering.</p>
+        </div>
+
+        <div class="experience-item">
+          <h4>Zhejiang University</h4>
+          <p class="company">B.S. in Biological Engineering</p>
+          <p class="period">Sep. 2016 – Jun. 2020 | Zhejiang, China</p>
+          <p><em>Relevant coursework:</em> Data Structures and Algorithms, Computer System Organization, Game Development, Statistics and Probability, Numerical Analysis.</p>
+        </div>
+      </section>
+
+      <section id="skills">
+        <h2>Technical Skills</h2>
+        <div class="skills-grid">
+          <div class="card">
+            <h4>Languages</h4>
+            <p>Python, Kotlin, JavaScript, SQL, C++, Objective-C</p>
+          </div>
+          <div class="card">
+            <h4>Tools</h4>
+            <p>Jenkins, Harness, Docker, Git, Bash, AWS Device Farm</p>
+          </div>
+          <div class="card">
+            <h4>Areas</h4>
+            <p>Automation, CI/CD, Release Engineering, Test Infrastructure, Developer Productivity</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="experience">
+        <h2>Experience</h2>
+
+        <div class="experience-item">
+          <h4>Software Engineer</h4>
+          <p class="company">PayPal</p>
+          <p class="period">Feb. 2023 – Present | Chicago, IL</p>
+          <ul>
+            <li>Designed a consistent-hashing scheduler for CI workloads that reduced queue volume by 93% and cut average wait time by 99% to under 0.3 seconds.</li>
+            <li>Led migration of 400+ iOS CI and release jobs from Jenkins to Harness and created reusable notification components later adopted across 800+ mobile pipelines.</li>
+            <li>Consolidated template-based release workflows with parallel stages and standardized post-processing, improving runtime by 14%–47% across multiple pipelines and saving 47.4 engineering hours per week.</li>
+            <li>Built developer-productivity tooling, including a WireMock-based Android test framework that reduced test execution time by 80% and AI-assisted test-case generation that cut manual authoring time by 50%.</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <h4>Software Engineer Intern</h4>
+          <p class="company">Venmo</p>
+          <p class="period">May. 2022 – Aug. 2022 | San Jose, CA</p>
+          <ul>
+            <li>Enhanced CI pipelines by correcting coding errors, improving CI speed and test accuracy. Reduced build times by 20%.</li>
+            <li>Built automated end-to-end Android UI and API tests, improving app robustness and reducing user-reported bugs by 25%.</li>
+            <li>Deployed tests on AWS Device Farm to automate and record tests across various devices.</li>
+          </ul>
+        </div>
+
+        <div class="experience-item">
+          <h4>iOS Software Engineer Intern</h4>
+          <p class="company">NetEase</p>
+          <p class="period">May. 2021 – Aug. 2021 | Zhejiang, China</p>
+          <ul>
+            <li>Developed boosts UI with object-oriented Objective-C code, resulting in a 20% increase in customer frequency.</li>
+            <li>Organized code into MVC format to make it more extensible and maintainable, reducing development time by 30%.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="artifact">
+        <h2>Artifacts</h2>
+        <p>This portfolio includes selected artifacts that demonstrate my growth in leadership awareness, analytical reasoning, and applied understanding of machine learning concepts.</p>
+
+        <div class="artifact-section">
+          <h3 class="artifact-title">Leadership Growth in AI/ML and Change Management</h3>
+          <p>This artifact highlights my reflective analysis of leadership readiness, communication, adaptability, and change management in AI/ML-related environments. It serves as a foundation for my professional identity and shows how I approach growth with intention and self-awareness.</p>
+          <div class="card">
+            <h4>Focus</h4>
+            <p>Leadership development, communication, adaptability, and responsible change management.</p>
+          </div>
+          <div class="card">
+            <h4>Why It Matters</h4>
+            <p>It shows that I understand AI/ML work as both a technical and human-centered field that requires judgment, reflection, and leadership.</p>
+          </div>
+          <a class="artifact-link" href="artifact-leadership-growth.html" target="_blank">View Artifact</a>
+        </div>
+
+        <div class="artifact-section">
+          <h3 class="artifact-title">Comparing Machine Learning and Deep Learning in Real-World Applications</h3>
+          <p>This artifact explores the practical differences between machine learning and deep learning through real-world examples. It demonstrates my ability to compare AI approaches and evaluate which one is more suitable for a particular problem.</p>
+          <div class="card">
+            <h4>Focus</h4>
+            <p>Conceptual comparison, real-world applications, and practical method selection.</p>
+          </div>
+          <div class="card">
+            <h4>Why It Matters</h4>
+            <p>It shows analytical thinking, problem-solution matching, and the ability to communicate technical distinctions clearly.</p>
+          </div>
+          <a class="artifact-link" href="artifact-ml-vs-deep-learning.html" target="_blank">View Artifact</a>
+        </div>
+
+        <div class="artifact-section">
+          <h3 class="artifact-title">Machine Learning Training Methods Guide</h3>
+          <p>This artifact explains how machine learning models are trained and why different learning approaches are used in different situations. It organizes core concepts into a clear and practical guide for understanding model development.</p>
+          <div class="card">
+            <h4>Focus</h4>
+            <p>Supervised learning, unsupervised learning, reinforcement learning, and the training process behind machine learning models.</p>
+          </div>
+          <div class="card">
+            <h4>Why It Matters</h4>
+            <p>It shows my ability to turn technical learning into a polished, audience-friendly resource that connects theory with practice.</p>
+          </div>
+          <a class="artifact-link" href="training-methods-artifact.html" target="_blank">View Artifact</a>
+        </div>
+
+        <div class="artifact-section">
+          <h3 class="artifact-title">Communication Clarity and Leadership in Technical Teams</h3>
+          <p>This artifact focuses on the role of communication in leadership, collaboration, and team alignment. It reframes a course reflection into a professional discussion of how clarity affects performance, trust, and execution in team-based environments.</p>
+          <div class="card">
+            <h4>Focus</h4>
+            <p>Leadership communication, reducing confusion, audience awareness, and improving team understanding.</p>
+          </div>
+          <div class="card">
+            <h4>Why It Matters</h4>
+            <p>It shows that I understand effective AI/ML and technical work as not only analytical, but also communication-driven and collaboration-dependent.</p>
+          </div>
+          <a class="artifact-link" href="artifact-communication-clarity.html" target="_blank">View Artifact</a>
+        </div>
+
+        <div class="artifact-section">
+          <h3 class="artifact-title">Personal Framework for Ethical AI/ML Leadership</h3>
+          <p>This artifact presents a structured personal framework that defines my mission, values, objectives, action plans, and evaluation methods as an emerging AI/ML leader. It turns course reflection into a forward-looking professional leadership plan.</p>
+          <div class="card">
+            <h4>Focus</h4>
+            <p>Leadership vision, ethical AI/ML practice, professional growth, and change management.</p>
+          </div>
+          <div class="card">
+            <h4>Why It Matters</h4>
+            <p>It shows that I can connect technical learning with ethical responsibility, long-term planning, and intentional leadership development.</p>
+          </div>
+          <a class="artifact-link" href="artifact-personal-framework.html" target="_blank">View Artifact</a>
+        </div>
+      </section>
+
+      <section id="references">
+        <h2>References</h2>
+        <ul class="reference-list">
+          <li>Indiana Wesleyan University. (2026). <em>Professional portfolio artifact template</em>.</li>
+          <li>Indiana Wesleyan University. (2026). <em>AI/ML Integration Leadership Skills Self-Assessment Form</em>.</li>
+          <li>Indiana Wesleyan University. (2026). <em>Change Management Skills Self-Assessment Form</em>.</li>
+          <li>Indiana Wesleyan University. (2026). <em>Machine Learning vs. Deep Learning materials</em>.</li>
+          <li>Indiana Wesleyan University. (2026). <em>Problems of confusion assignment materials</em>.</li>
+          <li>IBM Developer. (n.d.). <em>A Beginner's Guide to Artificial Intelligence and Machine Learning</em>. <a href="https://developer.ibm.com/articles/cc-beginner-guide-machine-learning-ai-cognitive/" target="_blank">Link</a></li>
+          <li>Center for Creative Leadership. (n.d.). <em>How to be a successful change leader</em>. <a href="https://www.ccl.org/articles/leading-effectively-articles/successful-change-leader/" target="_blank">Link</a></li>
+          <li>Change Strategists. (n.d.). <em>How to assess change management skills</em>. <a href="https://changestrategists.com/how-to-assess-change-management-skills/" target="_blank">Link</a></li>
+          <li>Cleveland Clinic. (2022). <em>Neuroplasticity: What it is, purpose, examples &amp; how to improve it</em>. <a href="https://my.clevelandclinic.org/health/articles/22857-neuroplasticity" target="_blank">Link</a></li>
+          <li>BibleGateway. (n.d.). <em>1 Corinthians 14:8–9 (NIV)</em>. <a href="https://www.biblegateway.com/passage/?search=1%20Corinthians%2014%3A8-9&version=NIV" target="_blank">Link</a></li>
+          <li>BibleGateway. (n.d.). <em>Genesis 11:6–7 (NIV)</em>. <a href="https://www.biblegateway.com/passage/?search=Genesis%2011%3A6-7&version=NIV" target="_blank">Link</a></li>
+        </ul>
+      </section>
+    </div>
+
+    <footer>
+    </footer>
+  </div>
+
+  <script>
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a');
+
+    function setActiveNav() {
+      let currentId = '';
+      const offset = 120;
+
+      sections.forEach(section => {
+        const top = section.offsetTop - offset;
+        const height = section.offsetHeight;
+        if (window.scrollY >= top && window.scrollY < top + height) {
+          currentId = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${currentId}`);
+      });
+    }
+
+    window.addEventListener('scroll', setActiveNav);
+    window.addEventListener('load', setActiveNav);
+  </script>
+</body>
+
+</html>

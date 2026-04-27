@@ -36,6 +36,21 @@
       grid-template-columns: 1.05fr 0.95fr;
     }
     .hero, .panel { padding: 48px; }
+    .eyebrow-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .hero-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.32);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+      flex-shrink: 0;
+    }
     .eyebrow {
       display: inline-block;
       padding: 8px 14px;
@@ -44,7 +59,7 @@
       color: #fca5a5;
       font-size: 0.9rem;
       font-weight: 600;
-      margin-bottom: 18px;
+      margin-bottom: 0;
     }
     h1 {
       font-size: clamp(2.2rem, 4vw, 3.4rem);
@@ -158,6 +173,8 @@
       .hero, .panel { padding: 32px 24px; }
       .facts { grid-template-columns: 1fr; }
       .cta-row { grid-template-columns: 1fr; max-width: 100%; }
+      .eyebrow-wrap { gap: 12px; }
+      .hero-avatar { width: 54px; height: 54px; }
     }
   </style>
 </head>
@@ -165,7 +182,10 @@
   <main class="shell">
     <div class="grid">
       <section class="hero">
-        <div class="eyebrow">Qi Jin · BlueSaNGG</div>
+        <div class="eyebrow-wrap">
+          <img class="hero-avatar" src="/images/profile/qi-jin-avatar.jpg" alt="Portrait of Qi Jin" />
+          <div class="eyebrow">Qi Jin · BlueSaNGG</div>
+        </div>
         <h1>Software Engineer focused on reliable systems, release infrastructure, and developer tooling.</h1>
         <p class="subtitle">
           Start with the PDF resume for the quickest overview. The interactive resume adds more context, GitHub shows technical work, and the course portfolio remains available as supporting material.

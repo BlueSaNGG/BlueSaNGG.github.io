@@ -99,13 +99,28 @@ h1 {
 .quick-link:hover { border-color: var(--ink); background: rgba(179,64,42,.05); }
 .quick-link strong { display: block; font-family: 'Fraunces', Georgia, serif; font-size: 1.06rem; font-weight: 600; margin-bottom: 6px; }
 .quick-link span { color: var(--ink-soft); font-size: .95rem; line-height: 1.6; }
+.site-foot {
+  border-top: 1.5px solid var(--ink);
+  padding: 14px 48px;
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  font-family: 'IBM Plex Mono', monospace; font-size: .72rem; letter-spacing: .06em;
+  color: var(--ink-faint);
+}
+.site-foot .tag {
+  font-weight: 600; text-transform: uppercase; letter-spacing: .18em;
+  border: 1px solid var(--line); border-radius: 2px; padding: 3px 8px 2px;
+}
+.site-foot a { color: var(--accent-deep); font-weight: 600; text-decoration: none; }
+.site-foot a:hover { text-decoration: underline; }
 @media (max-width: 880px) {
+
   .grid { grid-template-columns: 1fr; }
   .panel { border-left: none; border-top: 1.5px solid var(--ink); }
   .hero, .panel { padding: 36px 26px; }
   .facts { grid-template-columns: 1fr; gap: 18px; }
   .cta-row { grid-template-columns: 1fr; max-width: 100%; }
   body { padding: 40px 14px; }
+  .site-foot { padding: 12px 26px; }
 }
 </style>
 </head>
@@ -166,17 +181,17 @@ h1 {
           <span>Repositories, code samples, and technical project history.</span>
         </a>
 
-        <a class="quick-link" href="https://bluesangg.github.io/preflop-trainer/" target="_blank" rel="noopener">
-          <strong>Preflop Trainer</strong>
-          <span>A free, mobile-friendly Texas Hold'em preflop decision trainer — 73 real spots with instant feedback and the why behind every answer.</span>
-        </a>
-
         <a class="quick-link" href="/CV/ml-portfolio.html">
           <strong>Professional Portfolio</strong>
           <span>Professional experience, AI/ML coursework artifacts, and supporting material.</span>
         </a>
       </aside>
     </div>
+    <footer class="site-foot">
+      <span class="tag">Side project</span>
+      <a href="https://bluesangg.github.io/preflop-trainer/" target="_blank" rel="noopener">Preflop Trainer</a>
+      <span>a Texas Hold'em preflop decision trainer</span>
+    </footer>
   </main>
 </body>
 </html>

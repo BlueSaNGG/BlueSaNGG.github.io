@@ -6,182 +6,108 @@
   <title>Qi Jin | Software Engineer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      color: #eaeefb;
-      background:
-        radial-gradient(circle at top left, rgba(233,69,96,0.22), transparent 32%),
-        radial-gradient(circle at bottom right, rgba(72,187,255,0.18), transparent 28%),
-        linear-gradient(135deg, #0f172a 0%, #111827 45%, #1e293b 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 32px;
-    }
-    .shell {
-      width: min(1100px, 100%);
-      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04));
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 28px;
-      backdrop-filter: blur(14px);
-      box-shadow: 0 24px 70px rgba(0,0,0,0.38);
-      overflow: hidden;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-    }
-    .hero, .panel { padding: 48px; }
-    .eyebrow-wrap {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 18px;
-    }
-    .hero-avatar {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: center;
-      border: 2px solid rgba(255,255,255,0.86);
-      box-shadow: 0 10px 24px rgba(15,23,42,0.20);
-      flex-shrink: 0;
-      background: rgba(255,255,255,0.12);
-    }
-    .eyebrow {
-      display: inline-block;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      color: #fca5a5;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 0;
-    }
-    h1 {
-      font-size: clamp(2.2rem, 4vw, 3.4rem);
-      line-height: 1.04;
-      margin-bottom: 16px;
-      letter-spacing: -0.04em;
-      max-width: 760px;
-      text-wrap: balance;
-    }
-    .subtitle {
-      font-size: 1.02rem;
-      color: rgba(255,255,255,0.82);
-      max-width: 620px;
-      line-height: 1.65;
-    }
-    .cta-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 28px;
-      max-width: 640px;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      padding: 15px 18px;
-      border-radius: 14px;
-      font-weight: 700;
-      min-height: 54px;
-      text-align: center;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
-    }
-    .btn:hover { transform: translateY(-2px); }
-    .btn-primary {
-      background: linear-gradient(135deg, #ff5b7a 0%, #e94560 55%, #cc3650 100%);
-      color: white;
-      box-shadow: 0 12px 28px rgba(233,69,96,0.34);
-    }
-    .btn-secondary {
-      background: rgba(255,255,255,0.08);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.14);
-    }
-    .btn-accent {
-      background: white;
-      color: #111827;
-      box-shadow: 0 10px 24px rgba(255,255,255,0.16);
-    }
-    .facts {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 16px;
-      margin-top: 36px;
-    }
-    .fact {
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.035));
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-    }
-    .fact .label {
-      font-size: 0.82rem;
-      color: rgba(255,255,255,0.6);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .fact .value {
-      font-size: 1rem;
-      font-weight: 700;
-      color: white;
-      line-height: 1.5;
-    }
-    .panel {
-      background: rgba(255,255,255,0.04);
-      border-left: 1px solid rgba(255,255,255,0.08);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 18px;
-    }
-    .panel h2 {
-      font-size: 1.2rem;
-      margin-bottom: 4px;
-    }
-    .panel p {
-      color: rgba(255,255,255,0.74);
-      line-height: 1.7;
-    }
-    .quick-link {
-      display: block;
-      padding: 18px 20px;
-      border-radius: 16px;
-      text-decoration: none;
-      color: white;
-      background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.03));
-      border: 1px solid rgba(255,255,255,0.08);
-      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
-    }
-    .quick-link:hover {
-      transform: translateY(-2px);
-      border-color: rgba(233,69,96,0.5);
-      background: rgba(255,255,255,0.08);
-      box-shadow: 0 14px 26px rgba(15,23,42,0.16);
-    }
-    .quick-link strong { display: block; margin-bottom: 6px; }
-    .quick-link span { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
-    @media (max-width: 880px) {
-      .grid { grid-template-columns: 1fr; }
-      .panel { border-left: none; border-top: 1px solid rgba(255,255,255,0.08); }
-      .hero, .panel { padding: 32px 24px; }
-      .facts { grid-template-columns: 1fr; }
-      .cta-row { grid-template-columns: 1fr; max-width: 100%; }
-      .eyebrow-wrap { gap: 12px; }
-      .hero-avatar { width: 52px; height: 52px; }
-    }
-  </style>
+:root {
+  --paper: #f8f3e8;
+  --paper-deep: #e9dfc6;
+  --ink: #23201a;
+  --ink-soft: rgba(35,32,26,.74);
+  --ink-faint: rgba(35,32,26,.52);
+  --line: rgba(35,32,26,.22);
+  --accent: #b3402a;
+  --accent-deep: #8a2d1c;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  color: var(--ink); background: var(--paper-deep);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 56px 22px; font-size: 17px;
+}
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: 3000; pointer-events: none; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+::selection { background: var(--accent); color: var(--paper); }
+.shell {
+  width: min(1100px, 100%); background: var(--paper);
+  border: 1.5px solid var(--ink); border-radius: 3px;
+  box-shadow: 0 30px 70px rgba(35,32,26,.22);
+  overflow: hidden; position: relative; z-index: 1;
+}
+.grid { display: grid; grid-template-columns: 1.05fr 0.95fr; }
+.hero, .panel { padding: 52px 48px; }
+.eyebrow-wrap { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.hero-avatar {
+  width: 60px; height: 60px; border-radius: 50%; object-fit: cover; object-position: center;
+  border: 1.5px solid var(--ink); flex-shrink: 0; background: var(--paper-deep);
+  box-shadow: 2px 2px 0 rgba(35,32,26,.85);
+}
+.eyebrow {
+  display: inline-block; font-family: 'IBM Plex Mono', monospace;
+  font-size: .72rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--accent-deep); border: 1.5px solid var(--accent-deep);
+  padding: 9px 15px 8px; border-radius: 2px;
+  transform: rotate(-1.4deg); background: rgba(179,64,42,.06);
+}
+h1 {
+  font-family: 'Fraunces', Georgia, serif; font-weight: 560;
+  font-size: clamp(2.1rem, 3.8vw, 3.2rem); line-height: 1.06; letter-spacing: -0.015em;
+  margin-bottom: 18px; text-wrap: balance; max-width: 760px;
+}
+.subtitle { font-size: 1.08rem; line-height: 1.7; color: var(--ink-soft); max-width: 60ch; }
+.cta-row { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; margin-top: 30px; max-width: 640px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+  font-family: 'IBM Plex Mono', monospace; font-size: .76rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; text-align: center;
+  padding: 16px 16px 15px; border-radius: 2px; border: 1.5px solid var(--ink); min-height: 54px;
+  transition: background .16s ease, color .16s ease, box-shadow .16s ease;
+}
+.btn-accent { background: var(--ink); color: var(--paper); }
+.btn-accent:hover { background: var(--accent); border-color: var(--accent-deep); color: #fff; box-shadow: 4px 4px 0 rgba(35,32,26,.85); }
+.btn-primary, .btn-secondary { background: transparent; color: var(--ink); }
+.btn-primary:hover, .btn-secondary:hover { background: var(--ink); color: var(--paper); box-shadow: 4px 4px 0 rgba(179,64,42,.55); }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px; margin-top: 40px; }
+.fact { border-top: 2px solid var(--ink); padding-top: 14px; }
+.fact .label {
+  font-family: 'IBM Plex Mono', monospace; font-size: .68rem; font-weight: 600;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px;
+}
+.fact .value { font-family: 'Fraunces', Georgia, serif; font-size: 1rem; font-weight: 500; line-height: 1.5; }
+.panel {
+  background: rgba(35,32,26,.035); border-left: 1.5px solid var(--ink);
+  display: flex; flex-direction: column; justify-content: center; gap: 18px; counter-reset: ql;
+}
+.panel h2 { font-family: 'Fraunces', Georgia, serif; font-size: 1.35rem; font-weight: 600; margin-bottom: 2px; }
+.panel p { color: var(--ink-soft); line-height: 1.7; font-size: 1rem; }
+.quick-link {
+  display: block; padding: 18px 20px 18px 66px; position: relative;
+  text-decoration: none; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 2px; counter-increment: ql;
+  transition: border-color .16s ease, background .16s ease;
+}
+.quick-link::before {
+  content: counter(ql, decimal-leading-zero);
+  position: absolute; left: 20px; top: 21px;
+  font-family: 'IBM Plex Mono', monospace; font-size: .76rem; font-weight: 600;
+  color: var(--accent-deep); letter-spacing: .08em;
+}
+.quick-link:hover { border-color: var(--ink); background: rgba(179,64,42,.05); }
+.quick-link strong { display: block; font-family: 'Fraunces', Georgia, serif; font-size: 1.06rem; font-weight: 600; margin-bottom: 6px; }
+.quick-link span { color: var(--ink-soft); font-size: .95rem; line-height: 1.6; }
+@media (max-width: 880px) {
+  .grid { grid-template-columns: 1fr; }
+  .panel { border-left: none; border-top: 1.5px solid var(--ink); }
+  .hero, .panel { padding: 36px 26px; }
+  .facts { grid-template-columns: 1fr; gap: 18px; }
+  .cta-row { grid-template-columns: 1fr; max-width: 100%; }
+  body { padding: 40px 14px; }
+}
+</style>
 </head>
 <body>
   <main class="shell">
@@ -193,14 +119,14 @@
         </div>
         <h1>Software Engineer focused on reliable systems, release infrastructure, and developer tooling.</h1>
         <p class="subtitle">
-          Start with the PDF resume for the fastest overview. The interactive resume provides fuller context, GitHub highlights technical work, and the course portfolio remains available as supporting material.
+          Start with the PDF resume for the fastest overview. The interactive resume provides fuller context, GitHub highlights technical work, and the professional portfolio collects experience, artifacts, and project notes.
         </p>
 
         <div class="cta-row">
           <a class="btn btn-accent" href="/resume/QiJin_Resume.pdf" target="_blank" rel="noopener">Open PDF Resume</a>
           <a class="btn btn-primary" href="/interactive-resume.html">View Interactive Resume</a>
           <a class="btn btn-secondary" href="https://github.com/BlueSaNGG" target="_blank" rel="noopener">GitHub</a>
-          <a class="btn btn-secondary" href="/CV/ml-portfolio.html">Course Portfolio</a>
+          <a class="btn btn-secondary" href="/CV/ml-portfolio.html">Professional Portfolio</a>
         </div>
 
         <div class="facts">
@@ -210,7 +136,7 @@
           </div>
           <div class="fact">
             <div class="label">Current Focus</div>
-            <div class="value">Automation, CI/CD, release engineering, and developer productivity</div>
+            <div class="value">Release engineering &amp; developer productivity — with a growing AI/ML practice</div>
           </div>
           <div class="fact">
             <div class="label">Based In</div>
@@ -222,7 +148,7 @@
       <aside class="panel">
         <div>
           <h2>Start here</h2>
-          <p>The PDF resume is the fastest first pass. The interactive resume adds fuller context, GitHub shows technical work, and the course portfolio remains available as supplementary material.</p>
+          <p>The PDF resume is the fastest first pass. The interactive resume adds fuller context, GitHub shows technical work, and the professional portfolio collects experience, artifacts, and project notes.</p>
         </div>
 
         <a class="quick-link" href="/resume/QiJin_Resume.pdf" target="_blank" rel="noopener">
@@ -241,8 +167,8 @@
         </a>
 
         <a class="quick-link" href="/CV/ml-portfolio.html">
-          <strong>Course Portfolio</strong>
-          <span>Selected coursework artifacts and portfolio-style pages from AI/ML class work.</span>
+          <strong>Professional Portfolio</strong>
+          <span>Professional experience, AI/ML coursework artifacts, and supporting material.</span>
         </a>
       </aside>
     </div>

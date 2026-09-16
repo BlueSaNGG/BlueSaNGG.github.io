@@ -729,3 +729,60 @@ figure.effect:hover p {
     margin-bottom: 10px;
   }
 }
+
+/* ---- mobile fixes (appended; desktop behavior unchanged) ---- */
+@media (max-width: 900px) {
+  /* iOS Safari does not support background-attachment: fixed; use scroll */
+  .top-container {
+    background-attachment: scroll;
+  }
+
+  /* keep the hero action pills clear of the title on narrow screens */
+  .hero-actions {
+    top: 12px !important;
+    right: 12px !important;
+    gap: 8px !important;
+    max-width: 70vw;
+  }
+  .hero-actions a {
+    padding: 8px 13px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* project cards: hover captions don't exist on touch screens,
+     so stack image above an always-visible caption instead */
+  #projects figure {
+    border-radius: 16px;
+  }
+  #projects figure img {
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    transform: none;
+    opacity: 1;
+  }
+  #projects figure figcaption {
+    position: static;
+    height: auto;
+    background: linear-gradient(180deg, rgba(145,137,117,0.9), rgba(107,100,86,0.95));
+  }
+  figure.effect h3,
+  figure.effect p {
+    opacity: 1;
+    transform: none;
+  }
+  figure.effect h3 {
+    padding-bottom: 14px;
+  }
+  figure.effect h3::after {
+    transform: none;
+  }
+  figure.effect p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  /* keep the whole-card tap target working in stacked layout */
+  #projects figure a {
+    position: absolute;
+  }
+}

@@ -168,6 +168,11 @@
 </head>
 <body>
   <div class="wrap">
+    <div id="pf-migrate" style="display:none;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;border:1px solid rgba(96,165,250,.35);border-radius:12px;background:rgba(96,165,250,.08);font-size:.9rem;color:#eef2ff;">
+      <span style="flex:1">🃏 <strong>New:</strong> <a href="https://bluesangg.github.io/preflop-trainer/" style="color:#93c5fd;font-weight:700;">Preflop Trainer</a> <span style="color:#a5b4d4;">— drill 73 real preflop spots until the decisions are automatic.</span></span>
+      <button onclick="document.getElementById('pf-migrate').style.display='none';try{localStorage.setItem('odds_migrate_dismissed','1')}catch(e){}" style="background:none;border:0;color:#a5b4d4;cursor:pointer;font-size:1rem;line-height:1;padding:4px;" aria-label="Dismiss">✕</button>
+    </div>
+    <script>try{if(!localStorage.getItem('odds_migrate_dismissed'))document.getElementById('pf-migrate').style.display='flex';}catch(e){document.getElementById('pf-migrate').style.display='flex';}</script>
     <section class="hero">
       <div class="eyebrow">Hold'em Assistant</div>
       <h1>Texas Hold'em Assistant</h1>
